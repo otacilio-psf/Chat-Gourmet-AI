@@ -1,6 +1,6 @@
-# RatatouiLLM
+# Chat Gourmet AI
 
-<img src=".github/assets/RemyLLM.png" alt="Project Logo" width="300">
+<img src=".github/assets/cooking-robot.jpg" alt="Project Logo" width="300">
 
 A RAG system to generate recipe based on the ingredient available.
 
