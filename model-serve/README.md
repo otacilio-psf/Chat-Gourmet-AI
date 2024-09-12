@@ -19,7 +19,7 @@ To deploy this notebook on [Kaggle](https://www.kaggle.com/):
 2. **GPU Requirements**: Two T4 GPUs
 3. **Setup secrets**: You need to configure the following secrets on Kaggle:
     - `hf_token`: Your Hugging Face token
-    - `ngrok_token`: Your Ngrok token
+    - `ngrok_token`: Your [Ngrok token](https://ngrok.com/pricing) - we use free tier
 
 Ensure these secrets are set up properly for successful deployment and access.
 
