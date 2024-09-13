@@ -1,0 +1,2 @@
+qdrant-client[fastembed]>=1.8.2
+polars==1.7.1
