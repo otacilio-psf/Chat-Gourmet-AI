@@ -34,7 +34,7 @@ After setting up your instance, you'll receive a URL and API key that you can us
 To load data into your local Qdrant instance, use the following command:
 
 ```bash
-python load_data.py --size 350k
+python load_data.py
 ```
 
 This command will load a dataset of size 350,000 into your local instance.
@@ -44,7 +44,7 @@ This command will load a dataset of size 350,000 into your local instance.
 For loading data into a Qdrant cloud instance, use the command below, replacing `<paste-your-url-here>` and `<paste-your-api-key-here>` with your actual URL and API key:
 
 ```bash
-python load_data.py --size 350k --url <paste-your-url-here> --api_key <paste-your-api-key-here>
+python load_data.py --url <paste-your-url-here> --api_key <paste-your-api-key-here>
 ```
 
 This will upload the dataset to the cloud service, allowing you to work with it in a hosted environment.

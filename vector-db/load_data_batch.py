@@ -1,8 +1,8 @@
 from qdrant_client import QdrantClient
-from tqdm import tqdm
 import polars as pl
 import argparse
 import ast
+import gc
 
 def init(args):
     if args.url:
@@ -35,61 +35,65 @@ def init(args):
     
     return client, collection_name
 
-# 2M rows
-# def parse_2M_dataset():
-#     df = pl.read_parquet('hf://datasets/skadewdl3/recipe-nlg-llama2/data/train-*.parquet')
-
 # 350k rows
-def parse_350k_dataset():
-    data = (
-        pl.read_parquet('hf://datasets/rk404/recipe_short/final_recipes.parquet')
-        .select(['title', 'ingredients', 'directions', 'NER'])
-        .to_dicts()
-    )
-
-    metadata = []
-    documents = []
-
-    doc_template = """
+def clean_350k_dataset():
+    
+    def clean_data_structure(row):
+        doc_template = """
 Title: {title}
 Ingredients:\n{ingredients}
 Directions:\n{directions}
-    """
+"""
 
-    for d in tqdm(data, desc="Processing data", unit="row"):
-        # Cleaning the data
-        for key, value in d.items():
+        temp_data = list()
+        new_row = list()
+
+        for value in row:
             if value.startswith('[') and value.endswith(']'):
                 string_list_value = ast.literal_eval(value)
                 list_value= [item.strip() for item in string_list_value]
-
-                if key == "NER":
-                    d[key] = list_value
-                else:
-                    d[key] = "\n".join(list_value)
+                temp_data.append(list_value)
             else:
-                d[key] = value.strip()
+                temp_data.append(value.strip())
 
-        # prepare for Qdrant
-        metadata.append({"title": d['title'],"NER": d['NER']})
-        documents.append(doc_template.format(title=d['title'],ingredients=d['ingredients'],directions=d['directions']).strip())
+        temp_data[1] = "\n".join(temp_data[1])
+        temp_data[2] = "\n".join(temp_data[2])
 
-
-    return metadata, documents
-
-def load_data(client, collection_name, metadata, documents):
-    client.add(
-        collection_name=collection_name,
-        documents=documents,
-        metadata=metadata,
-        ids=tqdm(range(len(documents)), desc="Loading data", unit="document"),
-        parallel=0
+        new_row.append({"title": temp_data[0],"NER": temp_data[3]})
+        new_row.append(doc_template.format(title=temp_data[0],ingredients=temp_data[1],directions=temp_data[2]).strip())
+        
+        return tuple(new_row)
+    
+    return (
+        pl.read_parquet('hf://datasets/rk404/recipe_short/final_recipes.parquet')
+        .select(['title', 'ingredients', 'directions', 'NER'])
+        .map_rows(clean_data_structure)
+        .rename({"column_0": "metadata", "column_1": "document"})
     )
+
+def load_data(client, collection_name, df):
+
+    num_chunks = 3500
+    chunk_size = len(df) // num_chunks
+
+    for i in range(num_chunks):
+        start_idx = i * chunk_size
+        end_idx = (i + 1) * chunk_size if i != num_chunks - 1 else len(df)
+        data = df[start_idx:end_idx].to_dict(as_series=False)
+        client.add(
+            collection_name=collection_name,
+            documents=data['document'],
+            metadata=data['metadata'],
+            parallel=0
+        )
+    
+        del data
+        gc.collect()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Qdrant connection")
 
-    parser.add_argument('--size', type=str, required=True, help='Possible values: 350k or 2M')
     parser.add_argument('--url', type=str, required=False, help='Qdrant Cloud url')
     parser.add_argument('--api_key', type=str, required=False, help='Qdrant Cloud api_key')
 
@@ -97,11 +101,7 @@ if __name__ == "__main__":
 
     client, collection_name = init(args)
 
-    if args.size.lower() == "350k":
-        metadata, documents = parse_350k_dataset()
-    elif args.size.upper() == "2M":
-        raise Exception("Work in progress")
-    else:
-        raise Exception("Size to available")
+    df = clean_350k_dataset()
+
+    load_data(client, collection_name, df)
     
-    load_data(client, collection_name, metadata, documents)
