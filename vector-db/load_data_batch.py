@@ -1,8 +1,10 @@
 from qdrant_client import QdrantClient
+from itertools import islice
 import polars as pl
 import argparse
 import ast
 import gc
+import os
 
 def init(args):
     if args.url:
@@ -14,7 +16,6 @@ def init(args):
         client = QdrantClient(url="http://localhost:6333")
 
     client.set_model("sentence-transformers/all-MiniLM-L6-v2")
-    client.set_sparse_model("prithivida/Splade_PP_en_v1")
 
     collection_name = "recipes"
 
@@ -23,14 +24,12 @@ def init(args):
         
         client.create_collection(
             collection_name=collection_name,
-            vectors_config=client.get_fastembed_vector_params(),
-            sparse_vectors_config=client.get_fastembed_sparse_vector_params(),  
+            vectors_config=client.get_fastembed_vector_params()
         )
     else:
         client.create_collection(
             collection_name=collection_name,
-            vectors_config=client.get_fastembed_vector_params(),
-            sparse_vectors_config=client.get_fastembed_sparse_vector_params(),  
+            vectors_config=client.get_fastembed_vector_params()  
         )
     
     return client, collection_name
@@ -71,27 +70,34 @@ Directions:\n{directions}
         .rename({"column_0": "metadata", "column_1": "document"})
     )
 
+def batched(iterable, n):
+    iterator = iter(iterable)
+    while batch := list(islice(iterator, n)):
+        yield batch
+
 def load_data(client, collection_name, df):
 
-    num_chunks = 3500
-    chunk_size = len(df) // num_chunks
+    batch_size = 100
 
-    for i in range(num_chunks):
-        start_idx = i * chunk_size
-        end_idx = (i + 1) * chunk_size if i != num_chunks - 1 else len(df)
-        data = df[start_idx:end_idx].to_dict(as_series=False)
+    for batch in batched(df.iter_rows(named=True), batch_size):
+        documents = [point.pop("document") for point in batch]
+        metadata = [point.pop("metadata") for point in batch]
+
         client.add(
             collection_name=collection_name,
-            documents=data['document'],
-            metadata=data['metadata'],
+            documents=documents,
+            metadata=metadata,
             parallel=0
         )
-    
-        del data
+
+        del documents
+        del metadata
         gc.collect()
 
 
+
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser(description="Qdrant connection")
 
     parser.add_argument('--url', type=str, required=False, help='Qdrant Cloud url')
@@ -104,4 +110,3 @@ if __name__ == "__main__":
     df = clean_350k_dataset()
 
     load_data(client, collection_name, df)
-    
