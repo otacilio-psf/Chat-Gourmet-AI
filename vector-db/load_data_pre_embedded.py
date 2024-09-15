@@ -3,7 +3,6 @@ from datasets import load_dataset
 from itertools import islice
 import threading
 import argparse
-import os
 
 def init(args):
     if args.url:
@@ -53,6 +52,9 @@ def load_data(client, collection_name):
     for batch in batched(dataset, batch_size):
         ids = [point.pop("id") for point in batch]
         vectors = [point.pop("all-MiniLM-L6-v2") for point in batch]
+        for point in batch:
+            point["ingredients_list"] = " ".join(point["NER"])
+            del point["NER"]
 
         client.upsert(
             collection_name=collection_name,
@@ -64,30 +66,43 @@ def load_data(client, collection_name):
         )
 
 
+def full_text_index(client, collection_name):
+    client.create_payload_index(
+        collection_name=collection_name,
+        field_name="ingredients_list",
+        field_schema=models.TextIndexParams(
+            type="text",
+            tokenizer=models.TokenizerType.WORD,
+            min_token_len=2,
+            max_token_len=15,
+            lowercase=True,
+        ),
+    )
+
+    client.create_payload_index(
+        collection_name=collection_name,
+        field_name="document",
+        field_schema=models.TextIndexParams(
+            type="text",
+            tokenizer=models.TokenizerType.WORD,
+            min_token_len=2,
+            max_token_len=15,
+            lowercase=True,
+        ),
+    )
+
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser(description="Qdrant connection")
 
     parser.add_argument('--url', type=str, required=False, help='Qdrant Cloud url')
     parser.add_argument('--api_key', type=str, required=False, help='Qdrant Cloud api_key')
 
     args = parser.parse_args()
-    
-    class MockArgs:
-        def __init__(self):
-            self.url = False
 
-    mock_args = MockArgs()
-    mock_args.url = False
+    client, collection_name = init(args)
 
-    client_local, collection_name = init(mock_args)
-    client_cloud, _ = init(args)
+    load_data(client, collection_name)
 
-    local_thread = threading.Thread(target=load_data, args=(client_local, collection_name,))
-    local_thread.start()
-
-    cloud_thread = threading.Thread(target=load_data, args=(client_cloud, collection_name,))
-    cloud_thread.start()
-
-    local_thread.join()
-    cloud_thread.join()
+    full_text_index(client, collection_name)

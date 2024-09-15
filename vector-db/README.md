@@ -58,3 +58,7 @@ To address this, I pre-processed the embeddings using Kaggle with GPU support. T
 While `load_data_batch.py` works correctly, it was time-consuming to run locally without a GPU.
 
 You can find the processed data set at [otacilio-psf/recipe_short_embeddings](https://huggingface.co/datasets/otacilio-psf/recipe_short_embeddings)
+
+## Full text index
+
+To eneable full text filter (similar to full text search) we need to index the metadata columns after load it

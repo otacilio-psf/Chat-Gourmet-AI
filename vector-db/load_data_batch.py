@@ -1,10 +1,9 @@
-from qdrant_client import QdrantClient
+from qdrant_client import QdrantClient, models
 from itertools import islice
 import polars as pl
 import argparse
 import ast
 import gc
-import os
 
 def init(args):
     if args.url:
@@ -57,8 +56,9 @@ Directions:\n{directions}
 
         temp_data[1] = "\n".join(temp_data[1])
         temp_data[2] = "\n".join(temp_data[2])
+        temp_data[3] = " ".join(temp_data[3])
 
-        new_row.append({"title": temp_data[0],"NER": temp_data[3]})
+        new_row.append({"title": temp_data[0],"ingredients_list": temp_data[3]})
         new_row.append(doc_template.format(title=temp_data[0],ingredients=temp_data[1],directions=temp_data[2]).strip())
         
         return tuple(new_row)
@@ -77,7 +77,7 @@ def batched(iterable, n):
 
 def load_data(client, collection_name, df):
 
-    batch_size = 100
+    batch_size = 200
 
     for batch in batched(df.iter_rows(named=True), batch_size):
         documents = [point.pop("document") for point in batch]
@@ -95,6 +95,31 @@ def load_data(client, collection_name, df):
         gc.collect()
 
 
+def full_text_index(client, collection_name):
+    client.create_payload_index(
+        collection_name=collection_name,
+        field_name="ingredients_list",
+        field_schema=models.TextIndexParams(
+            type="text",
+            tokenizer=models.TokenizerType.WORD,
+            min_token_len=2,
+            max_token_len=15,
+            lowercase=True,
+        ),
+    )
+
+    client.create_payload_index(
+        collection_name=collection_name,
+        field_name="document",
+        field_schema=models.TextIndexParams(
+            type="text",
+            tokenizer=models.TokenizerType.WORD,
+            min_token_len=2,
+            max_token_len=15,
+            lowercase=True,
+        ),
+    )
+
 
 if __name__ == "__main__":
 
@@ -110,3 +135,5 @@ if __name__ == "__main__":
     df = clean_350k_dataset()
 
     load_data(client, collection_name, df)
+
+    full_text_index(client, collection_name)
