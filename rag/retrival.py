@@ -2,10 +2,10 @@ from qdrant_client import QdrantClient, models
 from fastembed import TextEmbedding
 import argparse
 
-def init(args):
-    if args.url:
-        if args.api_key:
-            client = QdrantClient(url=args.url, api_key=args.api_key)
+def init(url=None, api_key=None):
+    if url:
+        if api_key:
+            client = QdrantClient(url=url, api_key=api_key)
         else:
             raise Exception("An API key is required when a URL is provided.")
     else:
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    client, collection_name = init(args)
+    client, collection_name = init(url=args.url, api_key=args.api_key)
 
     test_cases = ["""
 Ingredients:
