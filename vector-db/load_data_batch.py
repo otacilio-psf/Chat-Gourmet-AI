@@ -29,7 +29,18 @@ def init(args):
         client.create_collection(
             collection_name=collection_name,
             vectors_config=client.get_fastembed_vector_params()  
+        )  
+          
+    if args.url:
+        client.update_collection(
+            collection_name=collection_name,
+            vectors_config={
+                "": models.VectorParamsDiff(
+                    on_disk= True
+                )   
+            },
         )
+
     
     return client, collection_name
 

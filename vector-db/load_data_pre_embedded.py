@@ -1,7 +1,6 @@
 from qdrant_client import QdrantClient, models
 from datasets import load_dataset
 from itertools import islice
-import threading
 import argparse
 
 def init(args):
@@ -34,6 +33,16 @@ def init(args):
             )
         )
     
+    if args.url:
+        client.update_collection(
+            collection_name=collection_name,
+            vectors_config={
+                "": models.VectorParamsDiff(
+                    on_disk= True
+                )   
+            },
+        )
+
     return client, collection_name
 
 def batched(iterable, n):
