@@ -18,32 +18,9 @@ def stream_response():
         yield content
 
 
-NGROK_API_KEY = os.environ['NGROK_API_KEY']
-
-headers = {
-    'Authorization': f'Bearer {NGROK_API_KEY}',
-    'Ngrok-Version': '2'
-}
-
-ngrok_response = requests.get('https://api.ngrok.com/tunnels', headers=headers)
-
-OPENAI_API_URL = ngrok_response.json()['tunnels'][0]['public_url']
-OPENAI_API_KEY = "open-source-model"
-
-while True:
-    r = requests.get(f"{OPENAI_API_URL}/health")
-    if r.status_code == 200:
-        print("Model available")
-        break
-    time.sleep(1)
-
-
-client = OpenAI(
-    base_url=f'{OPENAI_API_URL}/v1',
-    api_key=OPENAI_API_KEY
-)
-
-OPENAI_API_MODEL = client.models.list().model_dump()['data'][0]['id']
+OPENAI_API_URL = os.getenv("OPENAI_API_URL")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL")
 
 client = OpenAI(
     base_url=f'{OPENAI_API_URL}/v1',
