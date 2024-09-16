@@ -1,15 +1,12 @@
 from qdrant_client import QdrantClient, models
 from fastembed import TextEmbedding
 import argparse
+import os
 
-def init(url=None, api_key=None):
-    if url:
-        if api_key:
-            client = QdrantClient(url=url, api_key=api_key)
-        else:
-            raise Exception("An API key is required when a URL is provided.")
-    else:
-        client = QdrantClient(url="http://localhost:6333")
+def init():
+    url = os.getenv("QDRANT_URL")
+    api_key = os.getenv("QDRANT_API_KEY")
+    client = QdrantClient(url=url, api_key=api_key)
 
     collection_name = "recipes"
     

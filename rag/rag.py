@@ -1,11 +1,11 @@
-from retrival import init, VectorSearcher
+from retrival import init, VectorSearcher, HybridSearcher
 from generation import generate
 import json
 import os
 
 client, collection_name = init()
 
-vector_searcher = VectorSearcher(client=client, collection_name=collection_name)
+hybrid_searcher = HybridSearcher(client=client, collection_name=collection_name)
 
 def initialize_system_instructions(messages):
     system_init_msg = [{
@@ -73,7 +73,7 @@ def rag(messages, stream=False):
     query_decision = query_rewrite(user_question["content"])
 
     if query_decision["search"] == "yes":
-        search_results = vector_searcher.search(text=query_decision["query"])
+        search_results = hybrid_searcher.search(text=query_decision["query"])
         user_question["content"] = prompt_template(user_question["content"], search_results)
         messages.append(user_question)
         return generate(messages=messages, stream=stream)
