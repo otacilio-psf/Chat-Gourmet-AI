@@ -28,6 +28,10 @@ This repo is for [Data Talks LLM Zoomcamp](https://github.com/DataTalksClub/llm-
 
 ## How to run this project
 
+Prepare vector database, for it please check README inside vector-db
+
+Serve llama 3.1 8b on Kaggle, for it please check README inside model-serve
+
 Install dependencies
 
 ```bash
@@ -40,7 +44,7 @@ To start the Open Ai compatible server
 python rag/server.py
 ```
 
-To query
+Query
 
 ```python
 client = OpenAI(
