@@ -1,3 +1,10 @@
+# Project scoped
+qdrant_storage/
+qdrant_storage_bkp/
+.envrc
+data/
+.deprecated/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

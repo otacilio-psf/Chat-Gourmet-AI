@@ -10,6 +10,8 @@ from pydantic import BaseModel
 from starlette.responses import StreamingResponse
 from fastapi import FastAPI
 
+from rag import rag
+
 app = FastAPI(title="OpenAI-compatible API")
 
 
@@ -20,38 +22,33 @@ class Message(BaseModel):
 
 
 class ChatCompletionRequest(BaseModel):
-    model: Optional[str] = "mock-gpt-model"
+    model: Optional[str] = "unknow"
     messages: List[Message]
-    max_tokens: Optional[int] = 512
-    temperature: Optional[float] = 0.1
     stream: Optional[bool] = False
+    #max_tokens: Optional[int] = 512
+    #temperature: Optional[float] = 0.1
 
+async def _resp_async_generator(request: ChatCompletionRequest, resp_content: str):
 
-async def _resp_async_generator(request: ChatCompletionRequest, text_resp: str):
-    tokens = text_resp.split(" ")
-
-    for i, token in enumerate(tokens):
+    for i, token in enumerate(resp_content):
         chunk = {
             "id": i,
             "object": "chat.completion.chunk",
             "created": time.time(),
             "model": request.model,
-            "choices": [{"delta": {"content": token + " "}}],
+            "choices": [{"delta": {"content": token}}],
         }
         yield f"data: {json.dumps(chunk)}\n\n"
-        await asyncio.sleep(1)
     yield "data: [DONE]\n\n"
 
 
-@app.post("/chat/completions")
+@app.post("/v1/chat/completions")
 async def chat_completions(request: ChatCompletionRequest):
-    if request.messages:
-        resp_content = (
-            "As a mock AI Assistant, I can only echo your last message: "
-            + request.messages[-1].content
-        )
-    else:
-        resp_content = "As a mock AI Assistant, I can only echo your last message, but there wasn't one!"
+    if not request.messages:
+        resp_content = "No messages provided"
+
+    messages = [{'role': message.role, 'content': message.content} for message in request.messages]
+    resp_content = rag(messages, request.stream)
 
     if request.stream:
         return StreamingResponse(
