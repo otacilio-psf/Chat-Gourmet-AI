@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  rag:
+    build:
+      context: ./rag
+    container_name: rag_service
+    ports:
+      - "8000:8000"
+    environment:
+      QDRANT_URL: "http://qdrant_service:6333"
+      LLM_SYSTEM: "OPENAI"
+      OPENAI_API_KEY: "open-source-model"
+      OPENAI_API_URL: "ngrok"
+      OPENAI_MODEL_NAME: "ngrok"
+      NGROK_API_KEY: "${NGROK_API_KEY}"
+      HF_TOKEN: "${HF_TOKEN}"
+    depends_on:
+      - qdrant
+
+  ui:
+    build:
+      context: ./ui
+    container_name: ui_service
+    ports:
+      - "8501:8501"
+    environment:
+      OPENAI_API_URL: "http://rag_service:8000"
+      OPENAI_API_KEY: "not-needed"
+    depends_on:
+      - rag
+
+  qdrant:
+    image: qdrant/qdrant:v1.11.3
+    container_name: qdrant_service
+    ports:
+      - "6333:6333"
+    volumes:
+      - ./qdrant_storage:/qdrant/storage
