@@ -32,7 +32,6 @@ def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
             if timer <= 3*60:
                 r = requests.get(f"{OPENAI_API_URL}/health")
                 if r.status_code == 200:
-                    print("Model available")
                     break
                 time.sleep(1)
                 timer += 1
@@ -64,15 +63,17 @@ def return_completion_stream(completion):
         yield chunk.choices[0].delta.content or ""
 
 
-def generate(messages, model_name=None, stream=False):
+def generate(messages, stream=False):
     if os.environ["LLM_SYSTEM"] == "OPENAI":
         OPENAI_API_URL = os.environ["OPENAI_API_URL"]
         OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
         client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
 
-        if os.environ["LLM_MODEL_NAME"] == "ngrok":
+        if os.environ["OPENAI_MODEL_NAME"] == "ngrok":
             model_name = client.models.list().model_dump()['data'][0]['id']
+        else:
+            model_name = os.environ["OPENAI_MODEL_NAME"]
 
         completion = client.chat.completions.create(
             model=model_name,
