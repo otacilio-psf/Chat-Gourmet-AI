@@ -9,10 +9,35 @@ The Chat Gourmet AI is here to simplify the process by generating recipes based 
 
 This project uses Retrieval-Augmented Generation (RAG) to provide tailored recipe suggestions, making meal planning easier and more enjoyable.
 
+## Table of Contents
+
+- [Chat Gourmet AI](#chat-gourmet-ai)
+  - [Table of Contents](#table-of-contents)
+  - [Project Overview](#project-overview)
+    - [Note](#note)
+  - [Project struture](#project-struture)
+  - [Dataset](#dataset)
+  - [How to run this project](#how-to-run-this-project)
+    - [With Docker](#with-docker)
+    - [Without Docker](#without-docker)
+    - [Query to the endpoint](#query-to-the-endpoint)
+    - [Chat with UI](#chat-with-ui)
+  - [Acknowledgements](#acknowledgements)
 
 ## Project Overview
 
-Dataset used for Retrival is a sample of: [RecipeNLG](https://recipenlg.cs.put.poznan.pl/)
+The Chat Gourmet AI is designed to exclusively help the user to get food recipes and tips
+
+Use cases:
+  - Recipe generation based on available ingridients
+  - Recipe generation based on dish name or cooking method
+  - Cooking tips and advices
+
+### Note
+
+This repo is for [Data Talks LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) project submission
+
+## Project struture
 
 This project is splited in:
  - model-serve
@@ -20,22 +45,50 @@ This project is splited in:
  - rag
  - ui
 
- Each of them contains unit of work pieces (and some specifics README)
+Each of them contains unit of work pieces (and some specifics README)
 
-### Note
+## Dataset
 
-This repo is for [Data Talks LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) project submission
+Dataset used for Retrival is a sample of: [RecipeNLG](https://recipenlg.cs.put.poznan.pl/)
+
+- Original 2M+ recipes
+- Sample 350k recipes
 
 ## How to run this project
 
-Prepare vector database, for it please check README inside vector-db
+### With Docker
 
-Serve llama 3.1 8b on Kaggle, for it please check README inside model-serve
+- Serve llama 3.1 8b on Kaggle, for it please check README inside model-serve
+
+- Start docker compose
+
+```bash
+docker compose up --build
+```
+
+- Prepare vector database, for it please check README inside vector-db
+
+### Without Docker
+
+- Start and prepare vector database, for it please check README inside vector-db
+
+- Serve llama 3.1 8b on Kaggle, for it please check README inside model-serve
 
 Install dependencies
 
 ```bash
 pip install -r rag/requirements.txt
+```
+
+Define Enviroment Variables
+```bash
+export NGROK_API_KEY="<your-ngrok-api-key>"
+export HF_TOKEN="<your-gh-token>"
+
+export LLM_SYSTEM="OPENAI"
+export OPENAI_API_KEY="open-source-model"
+export OPENAI_API_URL="ngrok"
+export OPENAI_MODEL_NAME="ngrok"
 ```
 
 To start the Open Ai compatible server
@@ -44,9 +97,11 @@ To start the Open Ai compatible server
 python rag/server.py
 ```
 
-Query
+### Query to the endpoint
 
 ```python
+from openai import OpenAI
+
 client = OpenAI(
     base_url=f'http://localhost:8000/v1',
     api_key="not-need"
@@ -78,6 +133,10 @@ content = client.chat.completions.create(
 print(content.choices[0].message.content)
 
 ```
+
+### Chat with UI
+
+If you are using docker compose, you can access the UI at [`http://localhost:8501`](http://localhost:8501) and have a chat!
 
 ## Acknowledgements
 
