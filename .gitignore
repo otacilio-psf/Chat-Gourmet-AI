@@ -4,6 +4,7 @@ qdrant_storage_bkp/
 .envrc
 data/
 .deprecated/
+.ruff_cache
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -62,6 +62,13 @@ Dataset used for retrival is a sample of: [RecipeNLG](https://recipenlg.cs.put.p
 
 - Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions.
 
+- Define Enviroment Variables:
+
+```bash
+export NGROK_API_KEY="<your-ngrok-api-key>"
+export HF_TOKEN="<your-gh-token>"
+```
+
 - Start docker compose:
 
 ```bash
@@ -72,15 +79,11 @@ docker compose up --build
 
 ### Without Docker
 
+- Have [uv installed](https://docs.astral.sh/uv/getting-started/installation/)
+
 - Start and prepare the vector database. Refer to the README inside the `vector-db` directory.
 
 - Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions.
-
-- Install dependencies: 
-
-```bash
-pip install -r rag/requirements.txt
-```
 
 - Define Enviroment Variables:
 
@@ -97,7 +100,11 @@ export OPENAI_MODEL_NAME="ngrok"
 - Start the OpenAI-compatible server:
 
 ```bash
-python rag/server.py
+cd rag
+
+uv sync --frozen
+
+uv run server.py
 ```
 
 ### Query to the endpoint
@@ -147,10 +154,11 @@ If using Docker Compose, you can access the UI at [`http://localhost:8501`](http
 
 This project leverages the following technologies:
 
-- Qdrant - A vector search database for efficient storage and retrieval of high-dimensional data.
-- OpenAI API - Provides advanced language models for natural language understanding and generation, powering the recipe suggestions.
-- FastAPI - A modern, fast web framework for building the API endpoint.
-- Streamlit - A framework for building interactive and user-friendly web interfaces, used for the project UI.
+- [Qdrant](https://qdrant.tech/documentation/) - A vector search database for efficient storage and retrieval of high-dimensional data.
+- [OpenAI API](https://platform.openai.com/docs/api-reference/introduction) - Provides a standart way to interact with LLM models.
+- [FastAPI](https://fastapi.tiangolo.com/) - A modern, fast web framework for building the API endpoint.
+- [Streamlit](https://docs.streamlit.io/) - A framework for building interactive and user-friendly web interfaces, used for the project UI.
+- [uv](https://docs.astral.sh/uv/) - An extremely fast Python package and project manager, written in Rust
 
 
 ## Acknowledgements

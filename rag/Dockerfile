@@ -1,8 +1,8 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-# Set the working directory in the container
-WORKDIR /app
+# Install uv.
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 # Install build tools required to compile some Python packages
 RUN apt-get update && apt-get install -y \
@@ -11,14 +11,12 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file into the container
-COPY requirements.txt .
+# Copy the application into the container.
+COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the current directory contents into the container at /app
-COPY . .
+# Install the application dependencies.
+WORKDIR /app
+RUN uv sync --frozen --no-cache
 
 # Expose port 8000 for the FastAPI app
 EXPOSE 8000
