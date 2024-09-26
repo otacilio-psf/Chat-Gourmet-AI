@@ -3,18 +3,20 @@ from fastembed import TextEmbedding
 import argparse
 import os
 
+
 def init():
     url = os.getenv("QDRANT_URL")
     api_key = os.getenv("QDRANT_API_KEY")
     client = QdrantClient(url=url, api_key=api_key)
 
     collection_name = "recipes"
-    
+
     return client, collection_name
 
 
 class VectorSearcher:
     DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+
     def __init__(self, client, collection_name):
         self.collection_name = collection_name
         self.qdrant_client = client
@@ -27,14 +29,15 @@ class VectorSearcher:
             query_vector=vector,
             query_filter=None,
             limit=limit,
-            score_threshold=score_threshold
+            score_threshold=score_threshold,
         )
-        document = [hit.payload['document'] for hit in search_result]
+        document = [hit.payload["document"] for hit in search_result]
         return document
 
 
 class HybridSearcher:
     DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+
     def __init__(self, client, collection_name):
         self.collection_name = collection_name
         self.qdrant_client = client
@@ -52,42 +55,45 @@ class HybridSearcher:
                 )
             ),
             limit=limit,
-            score_threshold=score_threshold
+            score_threshold=score_threshold,
         )
-        document = [hit.payload['document'] for hit in search_result]
+        document = [hit.payload["document"] for hit in search_result]
         return document
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Qdrant connection")
 
-    parser.add_argument('--url', type=str, required=False, help='Qdrant Cloud url')
-    parser.add_argument('--api_key', type=str, required=False, help='Qdrant Cloud api_key')
+    parser.add_argument("--url", type=str, required=False, help="Qdrant Cloud url")
+    parser.add_argument(
+        "--api_key", type=str, required=False, help="Qdrant Cloud api_key"
+    )
 
     args = parser.parse_args()
 
     client, collection_name = init(url=args.url, api_key=args.api_key)
 
-    test_cases = ["""
+    test_cases = [
+        """
 Ingredients:
 chicken
 tomato
 onion
 """.strip(),
-"""
+        """
 Title: Pizza
 """.strip(),
-"""
+        """
 Directions:
 make in the oven
 """.strip(),
-"""
+        """
 Ingredients:
 chicken
 tomato
 Directions:
 make in the oven
-""".strip()
+""".strip(),
     ]
 
     vector_searcher = VectorSearcher(client, collection_name=collection_name)
@@ -98,6 +104,6 @@ make in the oven
 
     for i in range(3):
         print(v_result[i])
-        print(10*"=")
+        print(10 * "=")
         print(h_result[i])
         print("\n\n")

@@ -1,13 +1,12 @@
-#https://towardsdatascience.com/how-to-build-an-openai-compatible-api-87c8edea2f06
-import asyncio
+# https://towardsdatascience.com/how-to-build-an-openai-compatible-api-87c8edea2f06
 import json
 import time
 import uvicorn
 
 from typing import Optional, List
 
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from starlette.responses import StreamingResponse
 from fastapi import FastAPI
 
 from rag import rag
@@ -25,11 +24,11 @@ class ChatCompletionRequest(BaseModel):
     model: Optional[str] = "unknow"
     messages: List[Message]
     stream: Optional[bool] = False
-    #max_tokens: Optional[int] = 512
-    #temperature: Optional[float] = 0.1
+    # max_tokens: Optional[int] = 512
+    # temperature: Optional[float] = 0.1
+
 
 async def _resp_async_generator(request: ChatCompletionRequest, resp_content: str):
-
     for i, token in enumerate(resp_content):
         chunk = {
             "id": i,
@@ -47,12 +46,16 @@ async def chat_completions(request: ChatCompletionRequest):
     if not request.messages:
         resp_content = "No messages provided"
 
-    messages = [{'role': message.role, 'content': message.content} for message in request.messages]
+    messages = [
+        {"role": message.role, "content": message.content}
+        for message in request.messages
+    ]
     resp_content = rag(messages, request.stream)
 
     if request.stream:
         return StreamingResponse(
-            _resp_async_generator(request, resp_content), media_type="application/x-ndjson"
+            _resp_async_generator(request, resp_content),
+            media_type="application/x-ndjson",
         )
 
     return {
@@ -65,5 +68,4 @@ async def chat_completions(request: ChatCompletionRequest):
 
 
 if __name__ == "__main__":
-    
     uvicorn.run(app, host="0.0.0.0", port=8000)
