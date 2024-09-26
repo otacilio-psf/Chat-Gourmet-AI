@@ -1,0 +1,15 @@
+[project]
+name = "ui"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai==1.44.1",
+    "streamlit==1.38.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.6.8",
+]
