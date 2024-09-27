@@ -1,6 +1,5 @@
 from qdrant_client import QdrantClient, models
 from fastembed import TextEmbedding
-import argparse
 import os
 
 
@@ -17,7 +16,8 @@ def init():
 class VectorSearcher:
     DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
-    def __init__(self, client, collection_name):
+    def __init__(self):
+        client, collection_name = init()
         self.collection_name = collection_name
         self.qdrant_client = client
         self.model = TextEmbedding(model_name=self.DENSE_MODEL)
@@ -38,7 +38,8 @@ class VectorSearcher:
 class HybridSearcher:
     DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
-    def __init__(self, client, collection_name):
+    def __init__(self):
+        client, collection_name = init()
         self.collection_name = collection_name
         self.qdrant_client = client
         self.model = TextEmbedding(model_name=self.DENSE_MODEL)
@@ -62,17 +63,6 @@ class HybridSearcher:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Qdrant connection")
-
-    parser.add_argument("--url", type=str, required=False, help="Qdrant Cloud url")
-    parser.add_argument(
-        "--api_key", type=str, required=False, help="Qdrant Cloud api_key"
-    )
-
-    args = parser.parse_args()
-
-    client, collection_name = init(url=args.url, api_key=args.api_key)
-
     test_cases = [
         """
 Ingredients:
@@ -96,10 +86,10 @@ make in the oven
 """.strip(),
     ]
 
-    vector_searcher = VectorSearcher(client, collection_name=collection_name)
+    vector_searcher = VectorSearcher()
     v_result = vector_searcher.search(text=test_cases[3], limit=3)
 
-    hybrid_searcher = HybridSearcher(client, collection_name=collection_name)
+    hybrid_searcher = HybridSearcher()
     h_result = hybrid_searcher.search(text=test_cases[3], limit=3)
 
     for i in range(3):

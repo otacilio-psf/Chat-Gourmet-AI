@@ -1,20 +1,15 @@
-# https://towardsdatascience.com/how-to-build-an-openai-compatible-api-87c8edea2f06
-import json
-import time
-import uvicorn
-
-from typing import Optional, List
-
 from fastapi.responses import StreamingResponse
+from typing import Optional, List
 from pydantic import BaseModel
 from fastapi import FastAPI
-
 from rag import rag
+import uvicorn
+import json
+import time
 
-app = FastAPI(title="OpenAI-compatible API")
+app = FastAPI(title="Chat Gourmet AI - OpenAI-compatible API")
 
 
-# Data models
 class Message(BaseModel):
     role: str
     content: str
@@ -24,8 +19,6 @@ class ChatCompletionRequest(BaseModel):
     model: Optional[str] = "unknow"
     messages: List[Message]
     stream: Optional[bool] = False
-    # max_tokens: Optional[int] = 512
-    # temperature: Optional[float] = 0.1
 
 
 async def _resp_async_generator(request: ChatCompletionRequest, resp_content: str):

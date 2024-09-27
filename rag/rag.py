@@ -1,17 +1,15 @@
-from retrival import init, HybridSearcher
+from retrival import HybridSearcher
 from generation import generate
 import json
 
-client, collection_name = init()
-
-hybrid_searcher = HybridSearcher(client=client, collection_name=collection_name)
+hybrid_searcher = HybridSearcher()
 
 
 def initialize_system_instructions(messages):
     system_init_msg = [
         {
             "role": "system",
-            "content": "You are a helpful and expert recipe assistant. Your primary task is to provide creative and detailed cooking suggestions for a single recipe idea, and instructions based only in the ingredients provided by the user, unless it asked to increment with others ingridients. Use any recipes in the CONTEXT as inspiration, but feel free to expand and enhance your responses with your broader knowledge of culinary techniques, ingredient substitutions, and cooking methods. If the user asks about topics unrelated to food or cooking, politely inform them that it is beyond your expertise, and redirect them to culinary-related questions.",
+            "content": "You are a helpful and expert recipe assistant. Your primary task is to provide creative and detailed cooking suggestions for a single recipe idea, and instructions based only in the ingredients provided by the user, unless it asked to increment with others ingridients. Use any recipes in the CONTEXT as inspiration, but feel free to expand and enhance your responses with your broader knowledge of culinary techniques, ingredient substitutions, and cooking methods. If the user asks about topics unrelated to food or cooking, politely inform them that you are designed exclusively for culinary-related questions, and avoid providing information outside of this scope. Gently encourage the user to ask questions related to cooking, ingredients, or food preparation.",
         }
     ]
 
