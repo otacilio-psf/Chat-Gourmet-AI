@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
-  rag:
+  core:
     build:
-      context: ./rag
-    container_name: rag_service
+      context: ./core
+    container_name: core_service
     ports:
       - "8000:8000"
     environment:
@@ -25,10 +23,10 @@ services:
     ports:
       - "8501:8501"
     environment:
-      OPENAI_API_URL: "http://rag_service:8000"
+      OPENAI_API_URL: "http://core_service:8000"
       OPENAI_API_KEY: "not-needed"
     depends_on:
-      - rag
+      - core
 
   qdrant:
     image: qdrant/qdrant:v1.11.3
