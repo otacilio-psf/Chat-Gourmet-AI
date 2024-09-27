@@ -1,8 +1,9 @@
 from retrival import HybridSearcher
-from generation import generate
+from generation import LLM
 import json
 
 hybrid_searcher = HybridSearcher()
+llm = LLM()
 
 
 def initialize_system_instructions(messages):
@@ -53,7 +54,7 @@ def query_rewrite(user_question):
         {"role": "user", "content": user_question},
     ]
 
-    result = generate(messages=messages)
+    result = llm.chat(messages=messages)
 
     try:
         j_result = json.loads(result)
@@ -77,11 +78,11 @@ def rag(messages, stream=False):
             user_question["content"], search_results
         )
         messages.append(user_question)
-        return generate(messages=messages, stream=stream)
+        return llm.chat(messages=messages, stream=stream)
 
     else:
         messages.append(user_question)
-        return generate(messages=messages, stream=stream)
+        return llm.chat(messages=messages, stream=stream)
 
 
 if __name__ == "__main__":

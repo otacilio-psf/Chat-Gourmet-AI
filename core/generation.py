@@ -54,32 +54,41 @@ def return_completion_stream(completion):
         yield chunk.choices[0].delta.content or ""
 
 
-def generate(messages, stream=False):
-    if os.environ["LLM_SYSTEM"] == "OPENAI":
-        OPENAI_API_URL = os.environ["OPENAI_API_URL"]
-        OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+class LLM:
+    def __init__(self):
+        self._llm_system = os.environ["LLM_SYSTEM"]
+        if self._llm_system == "OPENAI":
+            OPENAI_API_URL = os.environ["OPENAI_API_URL"]
+            OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
-        client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
+            self._client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
 
-        if os.environ["OPENAI_MODEL_NAME"] == "ngrok":
-            model_name = client.models.list().model_dump()["data"][0]["id"]
+            if os.environ["OPENAI_MODEL_NAME"] == "ngrok":
+                self._model_name = self._client.models.list().model_dump()["data"][0][
+                    "id"
+                ]
+            else:
+                self._model_name = os.environ["OPENAI_MODEL_NAME"]
+
         else:
-            model_name = os.environ["OPENAI_MODEL_NAME"]
+            # in case of others apis as need to be implemented
+            raise Exception("SYSTEM_LLM not implemented")
 
-        completion = client.chat.completions.create(
-            model=model_name,
-            messages=messages,
-            stream=stream,
-        )
+    def chat(self, messages, stream=False):
+        if self._llm_system == "OPENAI":
+            completion = self._client.chat.completions.create(
+                model=self._model_name,
+                messages=messages,
+                stream=stream,
+            )
 
-        if stream:
-            return return_completion_stream(completion)
+            if stream:
+                return return_completion_stream(completion)
+            else:
+                return completion.choices[0].message.content
         else:
-            return completion.choices[0].message.content
-
-    else:
-        # in case of others apis as need to be implemented
-        raise Exception("SYSTEM_LLM not implemented")
+            # in case of others apis as need to be implemented
+            raise Exception("SYSTEM_LLM not implemented")
 
 
 if __name__ == "__main__":
@@ -94,8 +103,9 @@ if __name__ == "__main__":
         },
     ]
 
+    llm = LLM()
     stream = True
-    content = generate(messages=messages, stream=stream)
+    content = llm.chat(messages=messages, stream=stream)
 
     if stream:
         for chunk in content:
