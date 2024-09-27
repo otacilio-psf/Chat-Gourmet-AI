@@ -44,7 +44,7 @@ This project is divided into the following components:
 
  - model-serve
  - vector-db
- - rag
+ - core
  - ui
 
 Each component can be runned standalone and can have its own README with specific instructions.
@@ -100,7 +100,7 @@ export OPENAI_MODEL_NAME="ngrok"
 - Start the OpenAI-compatible server:
 
 ```bash
-cd rag
+cd core
 
 uv sync --frozen
 
