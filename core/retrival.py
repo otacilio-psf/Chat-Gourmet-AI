@@ -22,7 +22,7 @@ class VectorSearcher:
         self.qdrant_client = client
         self.model = TextEmbedding(model_name=self.DENSE_MODEL)
 
-    def search(self, text: str, limit=5, score_threshold=0.7):
+    def search(self, text: str, limit=5, score_threshold=None):
         vector = next(self.model.embed(text)).tolist()
         search_result = self.qdrant_client.query_points(
             collection_name=self.collection_name,
@@ -46,7 +46,7 @@ class HybridSearcher:
         self.model = TextEmbedding(model_name=self.DENSE_MODEL)
         self.sparse_model = SparseTextEmbedding(model_name=self.SPARSE_MODEL)
 
-    def search(self, text: str, limit=5, score_threshold=0.7):
+    def search(self, text: str, limit=5, score_threshold=None):
         vector = next(self.model.query_embed(text))
         sparse_vector = next(self.sparse_model.query_embed(text))
         search_result = self.qdrant_client.query_points(
