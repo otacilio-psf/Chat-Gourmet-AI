@@ -127,6 +127,37 @@ wheels = [
 ]
 
 [[package]]
+name = "core"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "fastapi" },
+    { name = "fastembed" },
+    { name = "openai" },
+    { name = "qdrant-client" },
+    { name = "requests" },
+    { name = "uvicorn" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", specifier = "==0.114.1" },
+    { name = "fastembed", specifier = "==0.3.6" },
+    { name = "openai", specifier = "==1.44.1" },
+    { name = "qdrant-client", specifier = "==1.11.1" },
+    { name = "requests", specifier = ">=2.32.3" },
+    { name = "uvicorn", specifier = "==0.30.6" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ruff", specifier = ">=0.6.8" }]
+
+[[package]]
 name = "distro"
 version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -892,37 +923,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/69/ef/08d235dfcf810d159
 wheels = [
     { url = "https://files.pythonhosted.org/packages/70/e9/b4f75f0916d6661259667410f7bf5887b742f3d2662bfe1c809671b80b34/qdrant_client-1.11.1-py3-none-any.whl", hash = "sha256:1375fad77c825c957181ff53775fb900c4383e817f864ea30b2605314da92f07", size = 259400 },
 ]
-
-[[package]]
-name = "rag"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "fastapi" },
-    { name = "fastembed" },
-    { name = "openai" },
-    { name = "qdrant-client" },
-    { name = "requests" },
-    { name = "uvicorn" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi", specifier = "==0.114.1" },
-    { name = "fastembed", specifier = "==0.3.6" },
-    { name = "openai", specifier = "==1.44.1" },
-    { name = "qdrant-client", specifier = "==1.11.1" },
-    { name = "requests", specifier = ">=2.32.3" },
-    { name = "uvicorn", specifier = "==0.30.6" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "ruff", specifier = ">=0.6.8" }]
 
 [[package]]
 name = "requests"

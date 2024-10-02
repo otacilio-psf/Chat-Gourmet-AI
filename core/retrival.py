@@ -1,11 +1,11 @@
 from qdrant_client import QdrantClient, models
-from fastembed import TextEmbedding
+from fastembed import TextEmbedding, SparseTextEmbedding
 import os
 
 
 def init():
-    url = os.getenv("QDRANT_URL")
-    api_key = os.getenv("QDRANT_API_KEY")
+    url = os.getenv("QDRANT_URL", "http://localhost:6333")
+    api_key = os.getenv("QDRANT_API_KEY", None)
     client = QdrantClient(url=url, api_key=api_key)
 
     collection_name = "recipes"
@@ -24,42 +24,43 @@ class VectorSearcher:
 
     def search(self, text: str, limit=5, score_threshold=0.7):
         vector = next(self.model.embed(text)).tolist()
-        search_result = self.qdrant_client.search(
+        search_result = self.qdrant_client.query_points(
             collection_name=self.collection_name,
-            query_vector=vector,
-            query_filter=None,
+            query=vector,
+            using="all-MiniLM-L6-v2",
             limit=limit,
             score_threshold=score_threshold,
         )
-        document = [hit.payload["document"] for hit in search_result]
-        return document
+        documents = [hit.payload["document"] for hit in search_result.points]
+        return documents
 
 
 class HybridSearcher:
     DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+    SPARSE_MODEL = "Qdrant/bm42-all-minilm-l6-v2-attentions"
 
     def __init__(self):
         client, collection_name = init()
         self.collection_name = collection_name
         self.qdrant_client = client
         self.model = TextEmbedding(model_name=self.DENSE_MODEL)
+        self.sparse_model = SparseTextEmbedding(model_name=self.SPARSE_MODEL)
 
     def search(self, text: str, limit=5, score_threshold=0.7):
-        vector = next(self.model.embed(text)).tolist()
-        search_result = self.qdrant_client.search(
+        vector = next(self.model.query_embed(text))
+        sparse_vector = next(self.sparse_model.query_embed(text))
+        search_result = self.qdrant_client.query_points(
             collection_name=self.collection_name,
-            query_vector=vector,
-            query_filter=models.Filter(
-                must=models.FieldCondition(
-                    key="document",
-                    match=models.MatchText(text=text),
-                )
-            ),
+            prefetch=[
+                models.Prefetch(query=vector.tolist(), using="all-MiniLM-L6-v2", limit=2*limit),
+                models.Prefetch(query=sparse_vector.as_object(), using="bm42-all-minilm-l6-v2-attentions", limit=2*limit),
+            ],
+            query=models.FusionQuery(fusion=models.Fusion.RRF),
             limit=limit,
             score_threshold=score_threshold,
         )
-        document = [hit.payload["document"] for hit in search_result]
-        return document
+        documents = [hit.payload["document"] for hit in search_result.points]
+        return documents
 
 
 if __name__ == "__main__":
@@ -84,16 +85,22 @@ tomato
 Directions:
 make in the oven
 """.strip(),
+"No-Bake Nut Cookies",
+"Chicken",
     ]
-
     vector_searcher = VectorSearcher()
-    v_result = vector_searcher.search(text=test_cases[3], limit=3)
-
     hybrid_searcher = HybridSearcher()
-    h_result = hybrid_searcher.search(text=test_cases[3], limit=3)
+    for case in test_cases:
+        print("\n\n",8 * "=", "CASE", 8 * "=")
+        print(case)
+        
+        v_result = vector_searcher.search(text=case, limit=3)
+        h_result = hybrid_searcher.search(text=case, limit=3)
 
-    for i in range(3):
-        print(v_result[i])
-        print(10 * "=")
-        print(h_result[i])
-        print("\n\n")
+        for v in v_result:
+            print(5 * "=", "Vector", 5 * "=")
+            print(v)
+
+        for h in h_result:
+            print(5 * "=", "Hybrid", 5 * "=")       
+            print(h)
