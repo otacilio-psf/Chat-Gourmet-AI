@@ -10,11 +10,23 @@ For retrival we will evaluate the direct question and the rewrite query function
 
 ### Direct question
 
+#### VectorSearcher
+
+Time to run all 450 questions took 2 seconds
+
 - x (y%) RELEVANT
 - x (y%) PARTLY_RELEVANT
 - x (y%) NON_RELEVANT
 
-### Query rewrite
+#### HybridSearcher
+
+Time to run all 450 questions took 
+
+- x (y%) RELEVANT
+- x (y%) PARTLY_RELEVANT
+- x (y%) NON_RELEVANT
+
+### Query rewrite + Searcher
 
 - x (y%) RELEVANT
 - x (y%) PARTLY_RELEVANT
@@ -36,13 +48,7 @@ For the RAG flow we will evaluate with different models
 - x (y%) PARTLY_RELEVANT
 - x (y%) NON_RELEVANT
 
-### microsoft/Phi-3-medium-4k-instruct
-
-- x (y%) RELEVANT
-- x (y%) PARTLY_RELEVANT
-- x (y%) NON_RELEVANT
-
-### bartowski/Phi-3-medium-128k-instruct-GGUF - Q8_0
+### neuralmagic/Phi-3-medium-128k-instruct-quantized.w8a8
 
 - x (y%) RELEVANT
 - x (y%) PARTLY_RELEVANT
