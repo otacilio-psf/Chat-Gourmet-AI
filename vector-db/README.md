@@ -16,6 +16,7 @@ To deploy Qdrant locally using Docker, run the following command:
 docker run -d \
     -p 6333:6333 \
     -v $(pwd)/qdrant_storage:/qdrant/storage \
+    --ulimit nofile=10000:10000 \
     qdrant/qdrant:v1.11.3
 ```
 
@@ -42,17 +43,19 @@ uv sync --frozen
 To load data into your local Qdrant instance, use the following command:
 
 ```bash
-uv run load_data_batch.py
+uv run load_data_pre_embedded.py
 ```
 
 This command will load a dataset of size 350,000 into your local instance.
 
 ### Cloud Load
 
-For loading data into a Qdrant cloud instance, use the command below, replacing `<paste-your-url-here>` and `<paste-your-api-key-here>` with your actual URL and API key:
+For loading data into a Qdrant cloud instance, use the following enviromental variables `QDRANT_URL` and `QDRANT_API_KEY`, replacing `<paste-your-url-here>` and `<paste-your-api-key-here>` with your actual URL and API key:
 
 ```bash
-uv run load_data_batch.py --url <paste-your-url-here> --api_key <paste-your-api-key-here>
+export QDRANT_URL=<paste-your-url-here>
+export QDRANT_API_KEY=<paste-your-api-key-here>
+uv run load_data_pre_embedded.py
 ```
 
 This will upload the dataset to the cloud service, allowing you to work with it in a hosted environment.
@@ -61,22 +64,27 @@ This will upload the dataset to the cloud service, allowing you to work with it 
 
 Locally, embedding the data and loading it into the vector database (Qdrant) was taking too much time.
 
-To address this, I pre-processed the embeddings using Kaggle with GPU support. The embeddings were then uploaded to Hugging Face using the notebook `recipe-short-embeddings-gpu.ipynb`. After that, the data was loaded into Qdrant using the script `load_data_pre_embedded.py`.
+To address this, I pre-processed the embeddings using Kaggle with GPU support. The embeddings were then uploaded to Hugging Face using the notebook `recipe-short-embeddings-gpu.ipynb`.
+
+To generate the embedding locally you can run
 
 ```bash
-uv run load_data_pre_embedded.py
-```
-
-or
-
-```bash
-uv run load_data_pre_embedded.py --url <paste-your-url-here> --api_key <paste-your-api-key-here>
+uv run load_data_batch.py
 ```
 
 While `load_data_batch.py` works correctly, it was time-consuming to run locally without a GPU.
 
-You can find the processed data set at [otacilio-psf/recipe_short_embeddings](https://huggingface.co/datasets/otacilio-psf/recipe_short_embeddings)
+You can find the processed data set at [otacilio-psf/recipe_short_dense_and_sparse_embeddings](https://huggingface.co/datasets/otacilio-psf/recipe_short_dense_and_sparse_embeddings)
 
-## Full text index
+## Embedding models
 
-To eneable full text filter (similar to full text search) we need to index the metadata columns after load it
+- Dense Embeddings: Created using the sentence-transformers/all-MiniLM-L6-v2 model with fastembed library.
+- Sparse Embeddings: Generated using the Qdrant/bm25-all-minilm-l6-v2-attentions model with fastembed library.
+
+Sparse vector embedding model focuses on capturing the most important tokens from the text. It provides attention-based scores to highlight key terms, which can be beneficial for keyword-based search and sparse retrieval tasks.
+
+## Hybrid Search
+
+For the Hybrid search we are using the combination of Dense Vector search (Tradicional Vector search) and Sparse Vector search using [Reciprocal Rank Fusion*](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) to get the best of semantics, plus the best of matching specific words.
+
+*Considers the positions of results within each query, and boosts the ones that appear closer to the top in multiple of them.
