@@ -12,7 +12,7 @@ For retrival we will evaluate the direct question and the rewrite query function
 
 #### VectorSearcher
 
-Time to run all 450 questions took 2 seconds
+Time to run all 450 questions took 3 seconds
 
 - x (y%) RELEVANT
 - x (y%) PARTLY_RELEVANT
@@ -20,13 +20,15 @@ Time to run all 450 questions took 2 seconds
 
 #### HybridSearcher
 
-Time to run all 450 questions took 
+Time to run all 450 questions took 3 seconds
 
 - x (y%) RELEVANT
 - x (y%) PARTLY_RELEVANT
 - x (y%) NON_RELEVANT
 
 ### Query rewrite + Searcher
+
+Time to run all 450 questions took 18:29 minutes
 
 - x (y%) RELEVANT
 - x (y%) PARTLY_RELEVANT
