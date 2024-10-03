@@ -51,11 +51,6 @@ def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
         return client
 
 
-def return_completion_stream(completion):
-    for chunk in completion:
-        yield chunk.choices[0].delta.content or ""
-
-
 class LLM:
     def __init__(self):
         OPENAI_API_URL = os.environ["OPENAI_API_URL"]
@@ -70,8 +65,11 @@ class LLM:
         else:
             self._model_name = os.environ["OPENAI_MODEL_NAME"]
 
-
-    def chat(self, messages, stream=False):
+    def _return_completion_stream(self, completion):
+        for chunk in completion:
+            yield chunk.choices[0].delta.content or ""
+    
+    async def chat(self, messages, stream=False):
         completion = self._client.chat.completions.create(
             model=self._model_name,
             messages=messages,
@@ -79,12 +77,13 @@ class LLM:
         )
 
         if stream:
-            return return_completion_stream(completion)
+            return self._return_completion_stream(completion)
         else:
             return completion.choices[0].message.content
 
 
 if __name__ == "__main__":
+    import asyncio
     messages = [
         {
             "role": "system",
@@ -98,7 +97,8 @@ if __name__ == "__main__":
 
     llm = LLM()
     stream = True
-    content = llm.chat(messages=messages, stream=stream)
+
+    content = asyncio.run(llm.chat(messages=messages, stream=stream))
 
     if stream:
         for chunk in content:

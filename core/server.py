@@ -2,13 +2,13 @@ from fastapi.responses import StreamingResponse
 from typing import Optional, List
 from pydantic import BaseModel
 from fastapi import FastAPI
-from rag import rag
+from rag import ChatGourmet
 import uvicorn
 import json
 import time
 
 app = FastAPI(title="Chat Gourmet AI - OpenAI-compatible API")
-
+chat_gourmet = ChatGourmet()
 
 class Message(BaseModel):
     role: str
@@ -43,7 +43,7 @@ async def chat_completions(request: ChatCompletionRequest):
         {"role": message.role, "content": message.content}
         for message in request.messages
     ]
-    resp_content = rag(messages, request.stream)
+    resp_content = await chat_gourmet.rag(messages, request.stream)
 
     if request.stream:
         return StreamingResponse(
