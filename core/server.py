@@ -10,6 +10,7 @@ import time
 app = FastAPI(title="Chat Gourmet AI - OpenAI-compatible API")
 chat_gourmet = ChatGourmet()
 
+
 class Message(BaseModel):
     role: str
     content: str

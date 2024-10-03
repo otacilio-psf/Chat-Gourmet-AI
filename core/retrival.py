@@ -52,8 +52,14 @@ class HybridSearcher:
         search_result = self.qdrant_client.query_points(
             collection_name=self.collection_name,
             prefetch=[
-                models.Prefetch(query=vector.tolist(), using="all-MiniLM-L6-v2", limit=2*limit),
-                models.Prefetch(query=sparse_vector.as_object(), using="bm42-all-minilm-l6-v2-attentions", limit=2*limit),
+                models.Prefetch(
+                    query=vector.tolist(), using="all-MiniLM-L6-v2", limit=2 * limit
+                ),
+                models.Prefetch(
+                    query=sparse_vector.as_object(),
+                    using="bm42-all-minilm-l6-v2-attentions",
+                    limit=2 * limit,
+                ),
             ],
             query=models.FusionQuery(fusion=models.Fusion.RRF),
             limit=limit,
@@ -85,15 +91,15 @@ tomato
 Directions:
 make in the oven
 """.strip(),
-"No-Bake Nut Cookies",
-"Chicken",
+        "No-Bake Nut Cookies",
+        "Chicken",
     ]
     vector_searcher = VectorSearcher()
     hybrid_searcher = HybridSearcher()
     for case in test_cases:
-        print("\n\n",8 * "=", "CASE", 8 * "=")
+        print("\n\n", 8 * "=", "CASE", 8 * "=")
         print(case)
-        
+
         v_result = vector_searcher.search(text=case, limit=3)
         h_result = hybrid_searcher.search(text=case, limit=3)
 
@@ -102,5 +108,5 @@ make in the oven
             print(v)
 
         for h in h_result:
-            print(5 * "=", "Hybrid", 5 * "=")       
+            print(5 * "=", "Hybrid", 5 * "=")
             print(h)

@@ -3,6 +3,7 @@ from generation import LLM
 import asyncio
 import json
 
+
 class ChatGourmet:
     def __init__(self):
         self._hybrid_searcher = HybridSearcher()
@@ -28,7 +29,6 @@ class ChatGourmet:
         else:
             return system_init_msg + messages
 
-
     def _prompt_template(self, user_question, search_results):
         template = """
     {user_question}
@@ -51,7 +51,6 @@ class ChatGourmet:
         ).strip()
         return prompt
 
-
     async def _query_rewrite(self, user_question):
         messages = [
             {
@@ -71,7 +70,6 @@ class ChatGourmet:
                 return {"search": "no"}
         except Exception:
             return {"search": "no"}
-
 
     async def rag(self, messages, stream=False):
         messages = self._initialize_system_instructions(messages)
@@ -94,6 +92,7 @@ class ChatGourmet:
 
 if __name__ == "__main__":
     import asyncio
+
     messages = [
         {
             "role": "user",
@@ -101,10 +100,11 @@ if __name__ == "__main__":
         }
     ]
     chat_gourmet = ChatGourmet()
+
     async def test():
         content = await chat_gourmet.rag(messages, stream=True)
 
         async for chunk in content:
             print(chunk, end="")
-    
+
     asyncio.run(test())

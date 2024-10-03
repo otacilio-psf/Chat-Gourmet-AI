@@ -7,6 +7,7 @@ import os
 
 nest_asyncio.apply()
 
+
 def ngrok_url():
     NGROK_API_KEY = os.environ["NGROK_API_KEY"]
 
@@ -72,8 +73,6 @@ class LLM:
         async for chunk in completion:
             yield chunk.choices[0].delta.content or ""
 
-
-    
     async def chat(self, messages, stream=False):
         completion = await self._client.chat.completions.create(
             model=self._model_name,
@@ -101,6 +100,7 @@ if __name__ == "__main__":
 
     llm = LLM()
     stream = True
+
     async def run_test():
         content = await llm.chat(messages=messages, stream=stream)
 
