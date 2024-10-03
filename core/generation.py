@@ -1,9 +1,11 @@
 from openai import AsyncOpenAI
+import nest_asyncio
 import requests
 import asyncio
 import time
 import os
 
+nest_asyncio.apply()
 
 def ngrok_url():
     NGROK_API_KEY = os.environ["NGROK_API_KEY"]
