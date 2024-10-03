@@ -22,9 +22,11 @@ class ChatCompletionRequest(BaseModel):
 
 
 async def _resp_async_generator(request: ChatCompletionRequest, resp_content: str):
-    for i, token in enumerate(resp_content):
+    id = 0
+    async for token in resp_content:
+        id += 1
         chunk = {
-            "id": i,
+            "id": id,
             "object": "chat.completion.chunk",
             "created": time.time(),
             "model": request.model,

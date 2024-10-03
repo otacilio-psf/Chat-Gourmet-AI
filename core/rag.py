@@ -101,7 +101,10 @@ if __name__ == "__main__":
         }
     ]
     chat_gourmet = ChatGourmet()
-    content = asyncio.run(chat_gourmet.rag(messages, stream=True))
+    async def test():
+        content = await chat_gourmet.rag(messages, stream=True)
 
-    for chunk in content:
-        print(chunk, end="")
+        async for chunk in content:
+            print(chunk, end="")
+    
+    asyncio.run(test())

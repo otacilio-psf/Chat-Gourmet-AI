@@ -1,5 +1,6 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 import requests
+import asyncio
 import time
 import os
 
@@ -37,40 +38,42 @@ def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
             else:
                 raise Exception("LLM model via Ngrok timed out")
 
-        client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
+        client = AsyncOpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
 
         return client
 
     elif OPENAI_API_URL == "openai":
-        client = OpenAI()
+        client = AsyncOpenAI()
         return client
 
     else:
-        client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
+        client = AsyncOpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
 
         return client
 
 
 class LLM:
-    def __init__(self):
+    def __init__(self, model_name=None):
         OPENAI_API_URL = os.environ["OPENAI_API_URL"]
         OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-
         self._client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
+        self._model_name = asyncio.run(self._get_model(model_name or "ngrok"))
 
-        if os.environ["OPENAI_MODEL_NAME"] == "ngrok":
-            self._model_name = self._client.models.list().model_dump()["data"][0][
-                "id"
-            ]
+    async def _get_model(self, model_name):
+        if model_name == "ngrok":
+            model_list = await self._client.models.list()
+            return model_list.data[0].id
         else:
-            self._model_name = os.environ["OPENAI_MODEL_NAME"]
+            return model_name
 
-    def _return_completion_stream(self, completion):
-        for chunk in completion:
+    async def _return_completion_stream(self, completion):
+        async for chunk in completion:
             yield chunk.choices[0].delta.content or ""
+
+
     
     async def chat(self, messages, stream=False):
-        completion = self._client.chat.completions.create(
+        completion = await self._client.chat.completions.create(
             model=self._model_name,
             messages=messages,
             stream=stream,
@@ -83,7 +86,6 @@ class LLM:
 
 
 if __name__ == "__main__":
-    import asyncio
     messages = [
         {
             "role": "system",
@@ -97,11 +99,13 @@ if __name__ == "__main__":
 
     llm = LLM()
     stream = True
+    async def run_test():
+        content = await llm.chat(messages=messages, stream=stream)
 
-    content = asyncio.run(llm.chat(messages=messages, stream=stream))
+        if stream:
+            async for chunk in content:
+                print(chunk, end="")
+        else:
+            print(content)
 
-    if stream:
-        for chunk in content:
-            print(chunk, end="")
-    else:
-        print(content)
+    asyncio.run(run_test())
