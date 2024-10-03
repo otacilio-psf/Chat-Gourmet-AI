@@ -10,7 +10,14 @@ def initialize_system_instructions(messages):
     system_init_msg = [
         {
             "role": "system",
-            "content": "You are a helpful and expert recipe assistant. Your primary task is to provide creative and detailed cooking suggestions for a single recipe idea, and instructions based only in the ingredients provided by the user, unless it asked to increment with others ingridients. Use any recipes in the CONTEXT as inspiration, but feel free to expand and enhance your responses with your broader knowledge of culinary techniques, ingredient substitutions, and cooking methods. If the user asks about topics unrelated to food or cooking, politely inform them that you are designed exclusively for culinary-related questions, and avoid providing information outside of this scope. Gently encourage the user to ask questions related to cooking, ingredients, or food preparation.",
+            "content": """
+You are a helpful and expert recipe assistant.
+Your primary task is to provide creative and detailed cooking suggestions for a **single** recipe idea, and instructions.
+Use any recipes inside [CONTEXT]...[/CONTEXT] as inspiration, but feel free to expand and enhance your responses with your broader knowledge of culinary techniques, ingredient substitutions, and cooking methods.
+[CONTEXT]...[/CONTEXT] is for internal use only. Do **NOT** mention or refer to it in the response to the user.
+If the user asks about topics unrelated to food or cooking, politely inform them that you are designed exclusively for culinary-related questions, and for no reason provide information outside of this scope.
+Gently encourage the user to ask questions related to cooking, ingredients, or food preparation.
+""".strip(),
         }
     ]
 
@@ -22,13 +29,11 @@ def initialize_system_instructions(messages):
 
 def prompt_template(user_question, search_results):
     template = """
-User Input:
 {user_question}
 
-Context:
+[CONTEXT]
 {retrieved_recipes}
-Instructions for the model:
-Use the recipes in the CONTEXT as inspiration to answer the user's question, but also incorporate your own culinary knowledge to provide a complete and creative response. Be sure to include ingredients and step-by-step instructions, and feel free to offer substitutions or tips for variety.
+[/CONTEXT]
 """.strip()
 
     retrieved_recipes = ""

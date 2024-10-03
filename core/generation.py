@@ -18,6 +18,8 @@ def ngrok_url():
             raise Exception("No tunnels were found")
         else:
             raise Exception("More then one tunnels were found")
+    else:
+        raise Exception("Ngrok get tunnels error")
 
 
 def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
@@ -56,39 +58,30 @@ def return_completion_stream(completion):
 
 class LLM:
     def __init__(self):
-        self._llm_system = os.environ["LLM_SYSTEM"]
-        if self._llm_system == "OPENAI":
-            OPENAI_API_URL = os.environ["OPENAI_API_URL"]
-            OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+        OPENAI_API_URL = os.environ["OPENAI_API_URL"]
+        OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
-            self._client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
+        self._client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
 
-            if os.environ["OPENAI_MODEL_NAME"] == "ngrok":
-                self._model_name = self._client.models.list().model_dump()["data"][0][
-                    "id"
-                ]
-            else:
-                self._model_name = os.environ["OPENAI_MODEL_NAME"]
-
+        if os.environ["OPENAI_MODEL_NAME"] == "ngrok":
+            self._model_name = self._client.models.list().model_dump()["data"][0][
+                "id"
+            ]
         else:
-            # in case of others apis as need to be implemented
-            raise Exception("SYSTEM_LLM not implemented")
+            self._model_name = os.environ["OPENAI_MODEL_NAME"]
+
 
     def chat(self, messages, stream=False):
-        if self._llm_system == "OPENAI":
-            completion = self._client.chat.completions.create(
-                model=self._model_name,
-                messages=messages,
-                stream=stream,
-            )
+        completion = self._client.chat.completions.create(
+            model=self._model_name,
+            messages=messages,
+            stream=stream,
+        )
 
-            if stream:
-                return return_completion_stream(completion)
-            else:
-                return completion.choices[0].message.content
+        if stream:
+            return return_completion_stream(completion)
         else:
-            # in case of others apis as need to be implemented
-            raise Exception("SYSTEM_LLM not implemented")
+            return completion.choices[0].message.content
 
 
 if __name__ == "__main__":
