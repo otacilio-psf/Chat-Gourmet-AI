@@ -12,7 +12,6 @@ services:
       OPENAI_API_URL: "ngrok"
       OPENAI_MODEL_NAME: "ngrok"
       NGROK_API_KEY: "${NGROK_API_KEY}"
-      HF_TOKEN: "${HF_TOKEN}"
     depends_on:
       - qdrant
 
