@@ -71,6 +71,7 @@ class HybridSearcher:
 
 if __name__ == "__main__":
     import asyncio
+
     test_cases = [
         """
 Ingredients:

@@ -62,7 +62,7 @@ class ChatGourmet:
         ]
 
         result = await self._llm.chat(messages=messages)
-        
+
         for _ in range(2):
             try:
                 j_result = json.loads(result)
@@ -72,9 +72,8 @@ class ChatGourmet:
                     return {"search": "no"}
             except JSONDecodeError:
                 result = f"{{{result}}}"
-        
+
         return {"search": "no"}
-        
 
     async def rag(self, messages, stream=False):
         messages = self._initialize_system_instructions(messages)
@@ -83,7 +82,9 @@ class ChatGourmet:
         query_decision = await self._query_rewrite(user_question["content"])
 
         if query_decision["search"] == "yes":
-            search_results = await self._hybrid_searcher.search(text=query_decision["query"])
+            search_results = await self._hybrid_searcher.search(
+                text=query_decision["query"]
+            )
             user_question["content"] = self._prompt_template(
                 user_question["content"], search_results
             )
