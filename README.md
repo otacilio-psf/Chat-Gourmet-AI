@@ -43,6 +43,7 @@ This repo is a project submission for the [Data Talks LLM Zoomcamp](https://gith
 This project is divided into the following components:
 
  - model-serve
+ - evaluation
  - vector-db
  - core
  - ui
@@ -60,52 +61,94 @@ Dataset used for retrival is a sample of: [RecipeNLG](https://recipenlg.cs.put.p
 
 ### With Docker
 
-- Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions.
+1. Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions. Or you can use Groq free tier or OpenAI. 
 
-- Define Enviroment Variables:
+2. Define Enviroment Variables:
 
-```bash
-export NGROK_API_KEY="<your-ngrok-api-key>"
-export HF_TOKEN="<your-gh-token>"
-```
+   - Using `vllm-serve` on Kaggle:
+     ```bash
+     export NGROK_API_KEY="<your-ngrok-api-key>"
+     export OPENAI_API_URL="ngrok"
+     export OPENAI_API_KEY="open-source-model"
+     export OPENAI_MODEL_NAME="ngrok"
+     ```
+   
+   - Using OpenAi
+     ```bash
+     export NGROK_API_KEY=""
+     export OPENAI_API_URL="openai"
+     export OPENAI_API_KEY="<your-open-ai-key>"
+     export OPENAI_MODEL_NAME="<choosed-model>"
+     ```
 
-- Start docker compose:
+   - Using Groq
+     ```bash
+     export NGROK_API_KEY=""
+     export OPENAI_API_URL="https://api.groq.com/openai"
+     export OPENAI_API_KEY="<your-groq-key>"
+     export OPENAI_MODEL_NAME="<choosed-model>"
+     ```
 
-```bash
-docker compose up --build
-```
+3. Start docker compose:
 
-- Prepare the vector database. Refer to the README inside the `vector-db` directory.
+   ```bash
+   docker compose up --build
+   ```
+   or
+   ```bash
+   make chat-gourmet
+   ```
+   or without the ui
+   ```bash
+   make chat-gourmet-server
+   ```
+
+4. Prepare the vector database. Refer to the README inside the `vector-db` directory.
 
 ### Without Docker
 
-- Have [uv installed](https://docs.astral.sh/uv/getting-started/installation/)
+1. Have [uv installed](https://docs.astral.sh/uv/getting-started/installation/)
 
-- Start and prepare the vector database. Refer to the README inside the `vector-db` directory.
+2. Start and prepare the vector database. Refer to the README inside the `vector-db` directory.
+  - tip: To start Qdrant you can do `make qdrant` from root folder
 
-- Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions.
+3. Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions. Or you can use Groq free tier or OpenAI.
 
-- Define Enviroment Variables:
+4. Define Environment Variables:
 
-```bash
-export NGROK_API_KEY="<your-ngrok-api-key>"
-export HF_TOKEN="<your-gh-token>"
+   - Using `vllm-serve` on Kaggle:
+     ```bash
+     export NGROK_API_KEY="<your-ngrok-api-key>"
+     export OPENAI_API_KEY="open-source-model"
+     export OPENAI_API_URL="ngrok"
+     export OPENAI_MODEL_NAME="ngrok"
+     ```
+   
+   - Using OpenAi
+     ```bash
+     export OPENAI_API_KEY="<your-open-ai-key>"
+     export OPENAI_MODEL_NAME="<choosed-model>"
+     ```
 
-export LLM_SYSTEM="OPENAI"
-export OPENAI_API_KEY="open-source-model"
-export OPENAI_API_URL="ngrok"
-export OPENAI_MODEL_NAME="ngrok"
-```
+   - Using Groq
+     ```bash
+     export OPENAI_API_URL="https://api.groq.com/openai"
+     export OPENAI_API_KEY="<your-groq-key>"
+     export OPENAI_MODEL_NAME="<choosed-model>"
+     ```
 
-- Start the OpenAI-compatible server:
+5. Install Python Dependencies
 
-```bash
-cd core
+   ```bash
+   uv sync --frozen
+   ```
 
-uv sync --frozen
+6. Start the OpenAI-Compatible Server:
 
-uv run server.py
-```
+   ```bash
+   uv run server.py
+   ```
+
 
 ### Query to the endpoint
 
@@ -164,3 +207,5 @@ This project leverages the following technologies:
 ## Acknowledgements
 
 - The OpenAI-compatible server was based on this [Towards Data Science publication](https://towardsdatascience.com/how-to-build-an-openai-compatible-api-87c8edea2f06)
+
+- [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) from  DataTalks.Club for the amazing content and lernings

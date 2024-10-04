@@ -1,7 +1,11 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
+import nest_asyncio
 import requests
+import asyncio
 import time
 import os
+
+nest_asyncio.apply()
 
 
 def ngrok_url():
@@ -18,6 +22,8 @@ def ngrok_url():
             raise Exception("No tunnels were found")
         else:
             raise Exception("More then one tunnels were found")
+    else:
+        raise Exception("Ngrok get tunnels error")
 
 
 def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
@@ -35,60 +41,49 @@ def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
             else:
                 raise Exception("LLM model via Ngrok timed out")
 
-        client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
+        client = AsyncOpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
 
         return client
 
     elif OPENAI_API_URL == "openai":
-        client = OpenAI()
+        client = AsyncOpenAI()
         return client
 
     else:
-        client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
+        client = AsyncOpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
 
         return client
 
 
-def return_completion_stream(completion):
-    for chunk in completion:
-        yield chunk.choices[0].delta.content or ""
-
-
 class LLM:
-    def __init__(self):
-        self._llm_system = os.environ["LLM_SYSTEM"]
-        if self._llm_system == "OPENAI":
-            OPENAI_API_URL = os.environ["OPENAI_API_URL"]
-            OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+    def __init__(self, model_name=None):
+        OPENAI_API_URL = os.environ["OPENAI_API_URL"]
+        OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+        self._client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
+        self._model_name = asyncio.run(self._get_model(model_name or "ngrok"))
 
-            self._client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
-
-            if os.environ["OPENAI_MODEL_NAME"] == "ngrok":
-                self._model_name = self._client.models.list().model_dump()["data"][0][
-                    "id"
-                ]
-            else:
-                self._model_name = os.environ["OPENAI_MODEL_NAME"]
-
+    async def _get_model(self, model_name):
+        if model_name == "ngrok":
+            model_list = await self._client.models.list()
+            return model_list.data[0].id
         else:
-            # in case of others apis as need to be implemented
-            raise Exception("SYSTEM_LLM not implemented")
+            return model_name
 
-    def chat(self, messages, stream=False):
-        if self._llm_system == "OPENAI":
-            completion = self._client.chat.completions.create(
-                model=self._model_name,
-                messages=messages,
-                stream=stream,
-            )
+    async def _return_completion_stream(self, completion):
+        async for chunk in completion:
+            yield chunk.choices[0].delta.content or ""
 
-            if stream:
-                return return_completion_stream(completion)
-            else:
-                return completion.choices[0].message.content
+    async def chat(self, messages, stream=False):
+        completion = await self._client.chat.completions.create(
+            model=self._model_name,
+            messages=messages,
+            stream=stream,
+        )
+
+        if stream:
+            return self._return_completion_stream(completion)
         else:
-            # in case of others apis as need to be implemented
-            raise Exception("SYSTEM_LLM not implemented")
+            return completion.choices[0].message.content
 
 
 if __name__ == "__main__":
@@ -105,10 +100,14 @@ if __name__ == "__main__":
 
     llm = LLM()
     stream = True
-    content = llm.chat(messages=messages, stream=stream)
 
-    if stream:
-        for chunk in content:
-            print(chunk, end="")
-    else:
-        print(content)
+    async def run_test():
+        content = await llm.chat(messages=messages, stream=stream)
+
+        if stream:
+            async for chunk in content:
+                print(chunk, end="")
+        else:
+            print(content)
+
+    asyncio.run(run_test())
