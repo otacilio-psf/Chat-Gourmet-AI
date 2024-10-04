@@ -43,6 +43,7 @@ This repo is a project submission for the [Data Talks LLM Zoomcamp](https://gith
 This project is divided into the following components:
 
  - model-serve
+ - evaluation
  - vector-db
  - core
  - ui
@@ -66,13 +67,24 @@ Dataset used for retrival is a sample of: [RecipeNLG](https://recipenlg.cs.put.p
 
 ```bash
 export NGROK_API_KEY="<your-ngrok-api-key>"
-export HF_TOKEN="<your-gh-token>"
 ```
 
 - Start docker compose:
 
 ```bash
 docker compose up --build
+```
+
+or
+
+```bash
+make chat-gourmet
+```
+
+or without the ui
+
+```bash
+make chat-gourmet-server
 ```
 
 - Prepare the vector database. Refer to the README inside the `vector-db` directory.
@@ -82,6 +94,7 @@ docker compose up --build
 - Have [uv installed](https://docs.astral.sh/uv/getting-started/installation/)
 
 - Start and prepare the vector database. Refer to the README inside the `vector-db` directory.
+  - tip: To start Qdrant you can do `make qdrant` from root folder
 
 - Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions.
 
@@ -89,9 +102,6 @@ docker compose up --build
 
 ```bash
 export NGROK_API_KEY="<your-ngrok-api-key>"
-export HF_TOKEN="<your-gh-token>"
-
-export LLM_SYSTEM="OPENAI"
 export OPENAI_API_KEY="open-source-model"
 export OPENAI_API_URL="ngrok"
 export OPENAI_MODEL_NAME="ngrok"
@@ -164,3 +174,5 @@ This project leverages the following technologies:
 ## Acknowledgements
 
 - The OpenAI-compatible server was based on this [Towards Data Science publication](https://towardsdatascience.com/how-to-build-an-openai-compatible-api-87c8edea2f06)
+
+- [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) from  DataTalks.Club for the amazing content and lernings
