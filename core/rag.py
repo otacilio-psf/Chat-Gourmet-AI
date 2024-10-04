@@ -1,5 +1,5 @@
 from json.decoder import JSONDecodeError
-from retrival import HybridSearcher
+from retrieval import HybridSearcher
 from generation import LLM
 import asyncio
 import json
