@@ -1,3 +1,3 @@
 .PHONY: jlab
 jlab:
-	uv run jupyter lab --ServerApp.token=''
+	uv run jupyter lab --IdentityProvider.token=''

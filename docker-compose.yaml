@@ -7,11 +7,10 @@ services:
       - "8000:8000"
     environment:
       QDRANT_URL: "http://qdrant_service:6333"
-      LLM_SYSTEM: "OPENAI"
-      OPENAI_API_KEY: "open-source-model"
-      OPENAI_API_URL: "ngrok"
-      OPENAI_MODEL_NAME: "ngrok"
       NGROK_API_KEY: "${NGROK_API_KEY}"
+      OPENAI_API_URL: "${OPENAI_API_URL}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
+      OPENAI_MODEL_NAME: "${OPENAI_MODEL_NAME}"
     depends_on:
       - qdrant
 
