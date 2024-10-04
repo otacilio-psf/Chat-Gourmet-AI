@@ -1,3 +1,4 @@
+from json.decoder import JSONDecodeError
 from retrival import HybridSearcher
 from generation import LLM
 import asyncio
@@ -61,15 +62,19 @@ class ChatGourmet:
         ]
 
         result = await self._llm.chat(messages=messages)
-
-        try:
-            j_result = json.loads(result)
-            if "search" in j_result:
-                return j_result
-            else:
-                return {"search": "no"}
-        except Exception:
-            return {"search": "no"}
+        
+        for _ in range(2):
+            try:
+                j_result = json.loads(result)
+                if "search" in j_result:
+                    return j_result
+                else:
+                    return {"search": "no"}
+            except JSONDecodeError:
+                result = f"{{{result}}}"
+        
+        return {"search": "no"}
+        
 
     async def rag(self, messages, stream=False):
         messages = self._initialize_system_instructions(messages)
