@@ -83,7 +83,7 @@ class ChatGourmet:
         query_decision = await self._query_rewrite(user_question["content"])
 
         if query_decision["search"] == "yes":
-            search_results = self._hybrid_searcher.search(text=query_decision["query"])
+            search_results = await self._hybrid_searcher.search(text=query_decision["query"])
             user_question["content"] = self._prompt_template(
                 user_question["content"], search_results
             )
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     messages = [
         {
             "role": "user",
-            "content": "I have chicken, garlic, and tomatoes. What can I make with these?",
+            "content": "I have only chicken, garlic, and tomatoes. What can I make with these?",
         }
     ]
     chat_gourmet = ChatGourmet()
