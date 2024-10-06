@@ -21,6 +21,7 @@ This project uses Retrieval-Augmented Generation (RAG) to provide tailored recip
     - [Without Docker](#without-docker)
     - [Query to the endpoint](#query-to-the-endpoint)
     - [Chat with UI](#chat-with-ui)
+  - [Cloud deployment](#cloud-deployment)
   - [Built With](#built-with)
   - [Acknowledgements](#acknowledgements)
 
@@ -197,6 +198,15 @@ print(content.choices[0].message.content)
 ### Chat with UI
 
 If using Docker Compose, you can access the UI at [`http://localhost:8501`](http://localhost:8501) and have a chat!
+
+## Cloud deployment
+
+This project aims to deploy a Chat Gourmet AI to the cloud using the free tier offerings from various cloud services. Check more in `cloud-deployment` folder.
+
+You can access the app at [chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.streamlit.app)
+
+As it use free tier the app can be un-available some times due rate limits.
+
 
 ## Built With
 

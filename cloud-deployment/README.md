@@ -4,6 +4,8 @@ This project aims to deploy a Chat Gourmet AI to the cloud using the free tier o
 
 You can access the app at [chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.streamlit.app)
 
+As it use free tier the app can be un-available some times due rate limits.
+
 ## Services Used
 
 ### [Groq Cloud](https://console.groq.com/docs/quickstart)
@@ -20,4 +22,4 @@ Streamlit Community Cloud allows you to publish public Streamlit apps for free.
 
 ## Python Dependencies
 
-To manage Python dependencies efficiently, we created a link for the chatbot files in the `ui` directory and prepared a dedicated `pyproject.toml` file for cloud deployment.
+To manage Python dependencies efficiently, we created a link for the chatbot files in the `ui` directory and prepared a dedicated `pyproject.toml` file (exported to requirements.txt) for cloud deployment.
