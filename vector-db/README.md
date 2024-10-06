@@ -85,6 +85,6 @@ Sparse vector embedding model focuses on capturing the most important tokens fro
 
 ## Hybrid Search
 
-For the Hybrid search we are using the combination of Dense Vector search (Tradicional Vector search) and Sparse Vector search using [Reciprocal Rank Fusion*](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) to get the best of semantics, plus the best of matching specific words.
+For the Hybrid search we are using the combination of Dense Vector search (Tradicional Vector search) and Sparse Vector search and using [Reciprocal Rank Fusion*](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) to re-ranking the documents and get the best of semantics, plus the best of matching specific words.
 
 *Considers the positions of results within each query, and boosts the ones that appear closer to the top in multiple of them.

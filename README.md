@@ -14,8 +14,7 @@ This project uses Retrieval-Augmented Generation (RAG) to provide tailored recip
 - [Chat Gourmet AI](#chat-gourmet-ai)
   - [Table of Contents](#table-of-contents)
   - [Project Overview](#project-overview)
-    - [Note](#note)
-  - [Project struture](#project-struture)
+  - [Project Structure](#project-structure)
   - [Dataset](#dataset)
   - [How to run this project](#how-to-run-this-project)
     - [With Docker](#with-docker)
@@ -34,21 +33,27 @@ Use cases:
   - Recipe generation based on dish name or cooking method
   - Cooking tips and advice
 
-### Note
 
-This repo is a project submission for the [Data Talks LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp)
-
-## Project struture
+## Project Structure
 
 This project is divided into the following components:
 
- - model-serve
- - evaluation
- - vector-db
- - core
- - ui
+- core
+  - Core code of the project, including the RAG module and an OpenAI API-compatible server. Refer to its README for more details.
 
-Each component can be runned standalone and can have its own README with specific instructions.
+- vector-db
+  - Qdrant Vector Database preparation module. Check its README for instructions and retrieval details.
+
+- ui
+  - Web UI developed with Streamlit. See its README for more details.
+
+- model-serve
+  - A notebook designed for deployment on Kaggle using GPU to serve open-source LLM (with vLLM) and make it accessible via the internet (with Ngrok). Refer to its README for detailed instructions.
+
+- evaluation
+  - A notebook containing retrieval and RAG evaluation processes. Check its README for evaluation results and methodology.
+
+Each component can be run standalone and includes a README with specific instructions.
 
 ## Dataset
 

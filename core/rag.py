@@ -83,7 +83,7 @@ class ChatGourmet:
 
         if query_decision["search"] == "yes":
             search_results = await self._hybrid_searcher.search(
-                text=query_decision["query"]
+                text=query_decision["query"], limit=3
             )
             user_question["content"] = self._prompt_template(
                 user_question["content"], search_results
