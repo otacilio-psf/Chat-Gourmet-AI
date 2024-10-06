@@ -7,14 +7,18 @@ Being creative with daily meals can be exhausting, especially when you have a li
 
 The Chat Gourmet AI is here to simplify the process by generating recipes based on the ingredients you have on hand. Meal planning just got easier and more enjoyable!
 
-This project uses Retrieval-Augmented Generation (RAG) to provide tailored recipe suggestions, making meal planning easier and more enjoyable.
+This project uses Retrieval-Augmented Generation (RAG) to provide tailored recipe suggestions!
+
+## Access the Chat Gourmet AI
+
+You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.streamlit.app)
 
 ## Table of Contents
 
 - [Chat Gourmet AI](#chat-gourmet-ai)
+  - [Access the Chat Gourmet AI](#access-the-chat-gourmet-ai)
   - [Table of Contents](#table-of-contents)
   - [Project Overview](#project-overview)
-  - [Access the Chat Gourmet AI](#access-the-chat-gourmet-ai)
   - [Project Structure](#project-structure)
   - [Dataset](#dataset)
   - [How to run this project](#how-to-run-this-project)
@@ -35,9 +39,6 @@ Use cases:
   - Recipe generation based on dish name or cooking method
   - Cooking tips and advice
 
-## Access the Chat Gourmet AI
-
-You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.streamlit.app)
 
 ## Project Structure
 
@@ -57,6 +58,9 @@ This project is divided into the following components:
 
 - evaluation
   - A notebook containing retrieval and RAG evaluation processes. Check its README for evaluation results and methodology.
+
+- cloud-deployment
+  - Folder with soft links to the necessary scripts, along with its own Python dependencies management file, to deploy to free tier services. Check its README for methodology and more details.
 
 Each component can be run standalone and includes a README with specific instructions.
 
