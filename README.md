@@ -14,6 +14,7 @@ This project uses Retrieval-Augmented Generation (RAG) to provide tailored recip
 - [Chat Gourmet AI](#chat-gourmet-ai)
   - [Table of Contents](#table-of-contents)
   - [Project Overview](#project-overview)
+  - [Access the Chat Gourmet AI](#access-the-chat-gourmet-ai)
   - [Project Structure](#project-structure)
   - [Dataset](#dataset)
   - [How to run this project](#how-to-run-this-project)
@@ -33,6 +34,9 @@ Use cases:
   - Recipe generation based on dish name or cooking method
   - Cooking tips and advice
 
+## Access the Chat Gourmet AI
+
+You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.streamlit.app)
 
 ## Project Structure
 
@@ -198,6 +202,16 @@ print(content.choices[0].message.content)
 
 If using Docker Compose, you can access the UI at [`http://localhost:8501`](http://localhost:8501) and have a chat!
 
+<<<<<<< Updated upstream
+=======
+## Cloud deployment
+
+This project aims to deploy a Chat Gourmet AI to the cloud using the free tier offerings from various cloud services. Check more in `cloud-deployment` folder.
+
+As it use free tier the app can be un-available some times due rate limits.
+
+
+>>>>>>> Stashed changes
 ## Built With
 
 This project leverages the following technologies:
