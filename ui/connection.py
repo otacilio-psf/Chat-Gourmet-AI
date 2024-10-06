@@ -1,10 +1,7 @@
 from openai import OpenAI
 import streamlit as st
 import asyncio
-import sys
 import os
-
-sys.path.append(os.path.abspath('../core'))
 
 CONNECTION_MODE = os.getenv("CONNECTION_MODE", "OpenAIapi")
 OPENAI_API_URL = os.getenv("OPENAI_API_URL")
