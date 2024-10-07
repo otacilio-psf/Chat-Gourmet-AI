@@ -1,7 +1,8 @@
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.security.api_key import APIKeyHeader
 from fastapi.responses import StreamingResponse
 from typing import Optional, List
 from pydantic import BaseModel
-from fastapi import FastAPI, Depends, HTTPException, APIKeyHeader
 from rag import ChatGourmet
 import uvicorn
 import json
@@ -10,8 +11,9 @@ import time
 app = FastAPI(title="Chat Gourmet AI - OpenAI-compatible API")
 chat_gourmet = ChatGourmet()
 API_KEY = "cg_123456789_key"
-API_KEY_NAME = "Authorization"
-api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+
+api_key_header = APIKeyHeader(name="Authorization", auto_error=False)
+
 
 class Message(BaseModel):
     role: str
@@ -25,13 +27,13 @@ class ChatCompletionRequest(BaseModel):
 
 
 def verify_api_key(api_key: str = Depends(api_key_header)):
-  if api_key is None:
+    if api_key is None:
         print("API key is missing")
         raise HTTPException(status_code=403, detail="API key is missing")
-  if api_key != f"Bearer {API_KEY}":
-      print(f"Invalid API key: {api_key}")
-      raise HTTPException(status_code=403, detail="Could not validate API key")
-  print(f"API key validated: {api_key}")
+    if api_key != f"Bearer {API_KEY}":
+        print(f"Invalid API key: {api_key}")
+        raise HTTPException(status_code=403, detail="Could not validate API key")
+    print(f"API key validated: {api_key}")
 
 
 async def _resp_async_generator(request: ChatCompletionRequest, resp_content: str):

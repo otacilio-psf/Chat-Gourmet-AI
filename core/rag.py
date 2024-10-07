@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
         async for chunk in content:
             yield chunk
-    
+
     def get_sync_response(messages):
         async_response = get_async_response(messages)
         while True:
@@ -120,8 +120,8 @@ if __name__ == "__main__":
                 content = asyncio.run(async_response.__anext__())
                 yield content
             except StopAsyncIteration:
-                break 
-    
+                break
+
     gen = get_sync_response(messages)
     for c in gen:
         print(c, end="")
