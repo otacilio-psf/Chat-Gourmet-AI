@@ -1,11 +1,7 @@
-from openai import AsyncOpenAI
-import nest_asyncio
+from openai import AsyncOpenAI, OpenAI
 import requests
-import asyncio
 import time
 import os
-
-nest_asyncio.apply()
 
 
 def ngrok_url():
@@ -60,11 +56,11 @@ class LLM:
         OPENAI_API_URL = os.environ["OPENAI_API_URL"]
         OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
         self._client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
-        self._model_name = asyncio.run(self._get_model(model_name or "ngrok"))
+        self._model_name = self._get_model(model_name or "ngrok", OPENAI_API_URL, OPENAI_API_KEY)
 
-    async def _get_model(self, model_name):
+    def _get_model(self, model_name, OPENAI_API_URL, OPENAI_API_KEY):
         if model_name == "ngrok":
-            model_list = await self._client.models.list()
+            model_list = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY).models.list()
             return model_list.data[0].id
         else:
             return model_name
@@ -87,6 +83,8 @@ class LLM:
 
 
 if __name__ == "__main__":
+    import asyncio
+
     messages = [
         {
             "role": "system",
