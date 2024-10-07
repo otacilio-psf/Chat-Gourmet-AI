@@ -44,13 +44,15 @@ def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
 
     elif OPENAI_API_URL == "openai":
         client = AsyncOpenAI()
-
-        return client, None
+        sync_client = OpenAI()
+        
+        return client, sync_client
 
     else:
         client = AsyncOpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
+        sync_client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
 
-        return client, None
+        return client, sync_client
 
 
 class LLM:
