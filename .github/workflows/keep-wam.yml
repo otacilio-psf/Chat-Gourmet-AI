@@ -22,7 +22,7 @@ jobs:
 
       - name: Keep Streamlit warm
         run: |
-          curl --max-redirs 5 -L -X GET https://chat-gourmet-ai.streamlit.app/
+          avoid_fail=$(curl -L --max-redirs 5 --silent -X GET https://chat-gourmet-ai.streamlit.app/)
       
           
 
