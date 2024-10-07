@@ -38,11 +38,13 @@ def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
                 raise Exception("LLM model via Ngrok timed out")
 
         client = AsyncOpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
+        sync_client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
 
-        return client
+        return client, sync_client
 
     elif OPENAI_API_URL == "openai":
         client = AsyncOpenAI()
+        
         return client
 
     else:
@@ -55,12 +57,12 @@ class LLM:
     def __init__(self, model_name=None):
         OPENAI_API_URL = os.environ["OPENAI_API_URL"]
         OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-        self._client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
-        self._model_name = self._get_model(model_name or "ngrok", OPENAI_API_URL, OPENAI_API_KEY)
+        self._client, self._sync_client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
+        self._model_name = self._get_model(model_name or "ngrok")
 
-    def _get_model(self, model_name, OPENAI_API_URL, OPENAI_API_KEY):
+    def _get_model(self, model_name):
         if model_name == "ngrok":
-            model_list = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY).models.list()
+            model_list = self._sync_client.models.list()
             return model_list.data[0].id
         else:
             return model_name
