@@ -106,23 +106,15 @@ if __name__ == "__main__":
             "content": "I have only chicken, garlic, and tomatoes. What can I make with these?",
         }
     ]
+
     chat_gourmet = ChatGourmet()
+    
+    async def run_test():
+        content = await chat_gourmet.rag(messages=messages)
 
-    async def get_async_response(messages):
-        content = await chat_gourmet.rag(messages, stream=True)
+        
+        for chunk in content:
+            print(chunk, end="")
 
-        async for chunk in content:
-            yield chunk
 
-    def get_sync_response(messages):
-        async_response = get_async_response(messages)
-        while True:
-            try:
-                content = asyncio.run(async_response.__anext__())
-                yield content
-            except StopAsyncIteration:
-                break
-
-    gen = get_sync_response(messages)
-    for c in gen:
-        print(c, end="")
+    asyncio.run(run_test())

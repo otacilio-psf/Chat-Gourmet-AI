@@ -100,8 +100,8 @@ if __name__ == "__main__":
             "content": "I have chicken, garlic, and tomatoes. What can I make with these?",
         },
     ]
-
-    llm = LLM()
+    OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME")
+    llm = LLM(OPENAI_MODEL_NAME)
     stream = True
 
     async def run_test():
