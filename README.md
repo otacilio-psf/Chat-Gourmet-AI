@@ -218,7 +218,7 @@ This project aims to deploy a Chat Gourmet AI to the cloud using the free tier o
 
 You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.streamlit.app)
 
-You can connect to the server at [chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.onrender.com/)
+You can connect to the server at [https://chat-gourmet-ai.onrender.com/](https://chat-gourmet-ai.onrender.com/)
 
 As it use free tier the app can be un-available some times due rate limits.
 
