@@ -44,7 +44,7 @@ def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
 
     elif OPENAI_API_URL == "openai":
         client = AsyncOpenAI()
-        
+
         return client
 
     else:
@@ -57,7 +57,9 @@ class LLM:
     def __init__(self, model_name=None):
         OPENAI_API_URL = os.environ["OPENAI_API_URL"]
         OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-        self._client, self._sync_client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
+        self._client, self._sync_client = get_openai_client(
+            OPENAI_API_URL, OPENAI_API_KEY
+        )
         self._model_name = self._get_model(model_name or "ngrok")
 
     def _get_model(self, model_name):

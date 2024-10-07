@@ -77,5 +77,10 @@ async def chat_completions(request: ChatCompletionRequest):
     }
 
 
+@app.get("/health")
+async def health_check():
+    return {"message": "success"}
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
