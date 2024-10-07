@@ -1,9 +1,9 @@
 import streamlit as st
 from connection import stream_response
 
-try:
-    st.set_page_config(page_title="Chat Gourmet AI", page_icon="🍔", layout="centered")
+st.set_page_config(page_title="Chat Gourmet AI", page_icon="🍔", layout="centered")
 
+try:
     st.title("💬🍔🤖 Chat Gourmet AI")
     st.caption("🚀 A RAG application to help you cook")
 
@@ -29,7 +29,5 @@ try:
         )
 
 except:
-    st.set_page_config(page_title="Chat Gourmet AI", page_icon="🍔", layout="centered")
-
     st.title("💬🍔🤖 Chat Gourmet AI")
     st.caption("Sorry we are temporary unavailable")
