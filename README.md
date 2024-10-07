@@ -26,7 +26,12 @@ You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-g
     - [Without Docker](#without-docker)
     - [Query to the endpoint](#query-to-the-endpoint)
     - [Chat with UI](#chat-with-ui)
-  - [Cloud deployment](#cloud-deployment)
+  - [King of the Free-Tier Cloud Deployment](#king-of-the-free-tier-cloud-deployment)
+    - [Services Used](#services-used)
+      - [Groq Cloud](#groq-cloud)
+      - [Qdrant Cloud](#qdrant-cloud)
+      - [Render](#render)
+      - [Streamlit Community Cloud](#streamlit-community-cloud)
   - [Built With](#built-with)
   - [Acknowledgements](#acknowledgements)
 
@@ -207,13 +212,33 @@ print(content.choices[0].message.content)
 
 If using Docker Compose, you can access the UI at [`http://localhost:8501`](http://localhost:8501) and have a chat!
 
-## Cloud deployment
+## King of the Free-Tier Cloud Deployment
 
-This project aims to deploy a Chat Gourmet AI to the cloud using the free tier offerings from various cloud services. Check more in `cloud-deployment` folder.
+This project aims to deploy a Chat Gourmet AI to the cloud using the free tier offerings from various cloud services.
 
 You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.streamlit.app)
 
+You can connect to the server at [chat-gourmet-ai.streamlit.app](https://chat-gourmet-ai.onrender.com/)
+
 As it use free tier the app can be un-available some times due rate limits.
+
+### Services Used
+
+#### [Groq Cloud](https://console.groq.com/docs/quickstart)
+
+Groq Cloud offers a free tier with a generous rate limit for several open-source models, including Llama 3.1.
+
+#### [Qdrant Cloud](https://qdrant.tech/pricing/)
+
+Qdrant Cloud provides a sufficient free tier where we can host our vector database.
+
+#### [Render](https://render.com/pricing/)
+
+Render provides a sufficient free tier to deploy our FastApi server
+
+#### [Streamlit Community Cloud](https://docs.streamlit.io/deploy/streamlit-community-cloud)
+
+Streamlit Community Cloud allows you to publish public Streamlit apps for free.
 
 ## Built With
 
