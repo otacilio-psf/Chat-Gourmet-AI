@@ -22,7 +22,7 @@ services:
       - "8501:8501"
     environment:
       OPENAI_API_URL: "http://core_service:8000"
-      OPENAI_API_KEY: "not-needed"
+      OPENAI_API_KEY: "cg_123456789_key"
     depends_on:
       - core
 

@@ -173,7 +173,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url=f'http://localhost:8000/v1',
-    api_key="not-need"
+    api_key="cg_123456789_key"
 )
 
 # Streamed response
