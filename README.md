@@ -49,32 +49,31 @@ Use cases:
 
 This project is divided into the following components:
 
-- core
+- `core`
   - Core code of the project, including the RAG module and an OpenAI API-compatible server. Refer to its README for more details.
 
-- vector-db
+- `vector-db`
   - Qdrant Vector Database preparation module. Check its README for instructions and retrieval details.
 
-- ui
+- `ui`
   - Web UI developed with Streamlit. See its README for more details.
 
-- model-serve
+- `model-serve`
   - A notebook designed for deployment on Kaggle using GPU to serve open-source LLM (with vLLM) and make it accessible via the internet (with Ngrok). Refer to its README for detailed instructions.
 
-- evaluation
+- `evaluation`
   - A notebook containing retrieval and RAG evaluation processes. Check its README for evaluation results and methodology.
-
-- cloud-deployment
-  - Folder with soft links to the necessary scripts, along with its own Python dependencies management file, to deploy to free tier services. Check its README for methodology and more details.
 
 Each component can be run standalone and includes a README with specific instructions.
 
 ## Dataset
 
-Dataset used for retrival is a sample of: [RecipeNLG](https://recipenlg.cs.put.poznan.pl/)
+Dataset used for retrival is a subset of: [RecipeNLG](https://recipenlg.cs.put.poznan.pl/)
 
 - Original: 2M+ recipes
-- Sample: 350k recipes
+- Subset: 350k recipes
+
+You can find the Subset at [otacilio-psf/recipe_short_dense_and_sparse_embeddings](https://huggingface.co/datasets/otacilio-psf/recipe_short_dense_and_sparse_embeddings) and read more about in `vector-db` README
 
 ## How to run this project
 
@@ -220,7 +219,7 @@ You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-g
 
 You can connect to the server at [https://chat-gourmet-ai.onrender.com/](https://chat-gourmet-ai.onrender.com/)
 
-As it use free tier the app can be un-available some times due rate limits.
+As it use free tier the app can be unavailable some times due rate limits.
 
 ### Services Used
 
