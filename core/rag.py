@@ -1,14 +1,15 @@
 from json.decoder import JSONDecodeError
 from retrieval import HybridSearcher
 from generation import LLM
-import asyncio
 import json
+import os
 
 
 class ChatGourmet:
     def __init__(self):
         self._hybrid_searcher = HybridSearcher()
-        self._llm = LLM()
+        OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME")
+        self._llm = LLM(OPENAI_MODEL_NAME)
 
     def _initialize_system_instructions(self, messages):
         system_init_msg = [
