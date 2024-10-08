@@ -2,14 +2,12 @@ from json.decoder import JSONDecodeError
 from retrieval import HybridSearcher
 from generation import LLM
 import json
-import os
 
 
 class ChatGourmet:
     def __init__(self):
         self._hybrid_searcher = HybridSearcher()
-        OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME")
-        self._llm = LLM(OPENAI_MODEL_NAME)
+        self._llm = LLM()
 
     def _initialize_system_instructions(self, messages):
         system_init_msg = [
@@ -108,13 +106,11 @@ if __name__ == "__main__":
     ]
 
     chat_gourmet = ChatGourmet()
-    
+
     async def run_test():
         content = await chat_gourmet.rag(messages=messages)
 
-        
         for chunk in content:
             print(chunk, end="")
-
 
     asyncio.run(run_test())

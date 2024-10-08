@@ -22,53 +22,51 @@ def ngrok_url():
         raise Exception("Ngrok get tunnels error")
 
 
-def get_openai_client(OPENAI_API_URL, OPENAI_API_KEY):
-    if OPENAI_API_URL == "ngrok":
-        OPENAI_API_URL = ngrok_url()
-
-        timer = 0
-        while True:
-            if timer <= 3 * 60:
-                r = requests.get(f"{OPENAI_API_URL}/health")
-                if r.status_code == 200:
-                    break
-                time.sleep(1)
-                timer += 1
-            else:
-                raise Exception("LLM model via Ngrok timed out")
-
-        client = AsyncOpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
-        sync_client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
-
-        return client, sync_client
-
-    elif OPENAI_API_URL == "openai":
-        client = AsyncOpenAI()
-        sync_client = OpenAI()
-
-        return client, sync_client
-
-    else:
-        client = AsyncOpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
-        sync_client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
-
-        return client, sync_client
-
-
 class LLM:
-    def __init__(self, model_name=None):
-        OPENAI_API_URL = os.environ["OPENAI_API_URL"]
-        OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-        self._client, self._sync_client = get_openai_client(OPENAI_API_URL, OPENAI_API_KEY)
-        self._model_name = self._get_model(model_name or "ngrok")
-        print(self._model_name)
+    OPENAI_API_URL = os.environ["OPENAI_API_URL"]
+    OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+    OPENAI_MODEL_NAME = os.environ["OPENAI_MODEL_NAME"]
 
-    def _get_model(self, model_name):
-        if model_name == "ngrok":
-            model_list = self._sync_client.models.list()
-            return model_list.data[0].id
+    def __init__(self):
+        self._get_openai_client()
+        self._get_model()
+
+    def _get_openai_client(self):
+        if self.OPENAI_API_URL == "ngrok":
+            self.OPENAI_API_URL = ngrok_url()
+
+            timer = 0
+            while True:
+                if timer <= 3 * 60:
+                    r = requests.get(f"{self.OPENAI_API_URL}/health")
+                    if r.status_code == 200:
+                        break
+                    time.sleep(1)
+                    timer += 1
+                else:
+                    raise Exception("LLM model via Ngrok timed out")
+
+            self._client = AsyncOpenAI(
+                base_url=f"{self.OPENAI_API_URL}/v1", api_key=self.OPENAI_API_KEY
+            )
+
+        elif self.OPENAI_API_URL == "openai":
+            self._client = AsyncOpenAI()
+
         else:
-            return model_name
+            self._client = AsyncOpenAI(
+                base_url=f"{self.OPENAI_API_URL}/v1", api_key=self.OPENAI_API_KEY
+            )
+
+    def _get_model(self):
+        if self.OPENAI_MODEL_NAME == "ngrok":
+            sync_client = OpenAI(
+                base_url=f"{self.OPENAI_API_URL}/v1", api_key=self.OPENAI_API_KEY
+            )
+            model_list = sync_client.models.list()
+            self._model_name = model_list.data[0].id
+        else:
+            self._model_name = self.OPENAI_MODEL_NAME
 
     async def _return_completion_stream(self, completion):
         async for chunk in completion:
@@ -100,8 +98,8 @@ if __name__ == "__main__":
             "content": "I have chicken, garlic, and tomatoes. What can I make with these?",
         },
     ]
-    OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME")
-    llm = LLM(OPENAI_MODEL_NAME)
+
+    llm = LLM()
     stream = True
 
     async def run_test():
