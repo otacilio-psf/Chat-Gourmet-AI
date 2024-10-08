@@ -1,0 +1,29 @@
+name: Keep services warm
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+    
+  workflow_dispatch:
+
+jobs:
+  run-workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Keep Render warm
+        run: |
+          curl -X GET https://chat-gourmet-ai.onrender.com/health
+          
+      - name: Keep Qdrant warm
+        run: |
+          curl -X GET https://32d62ff7-929c-49c0-a44c-89af89365618.europe-west3-0.gcp.cloud.qdrant.io:6333  \
+          -H "api-key: ${{ secrets.QDRANT_KEY }}"
+
+      - name: Keep Streamlit warm
+        run: |
+          curl -L --max-redirs 5 --silent -X GET https://chat-gourmet-ai.streamlit.app/ || true
+      
+          
+
+        
