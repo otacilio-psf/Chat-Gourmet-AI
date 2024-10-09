@@ -34,7 +34,7 @@ You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-g
       - [Qdrant Cloud](#qdrant-cloud)
       - [Render](#render)
       - [Streamlit Community Cloud](#streamlit-community-cloud)
-      - [Neon](#neon)
+      - [CockroachLabs](#cockroachlabs)
   - [Built With](#built-with)
   - [Acknowledgements](#acknowledgements)
 
@@ -264,9 +264,9 @@ Render provides a sufficient free tier to deploy our FastApi server
 
 Streamlit Community Cloud allows you to publish public Streamlit apps for free.
 
-#### [Neon](https://neon.tech/)
+#### [CockroachLabs](https://www.cockroachlabs.com/pricing/)
 
-Postgres cloud service for free.
+CockroachDB (Postgres compatible) cloud service for free.
 
 ## Built With
 

@@ -5,13 +5,13 @@ from wordcloud import WordCloud
 import psycopg2
 import os
 
-@st.cache_data
 def load_data():
     db_params = {
         "host": os.getenv("PGHOST"),
         "user": os.getenv("PGUSER"),
         "password": os.getenv("PGPASSWORD"),
-        "dbname": os.getenv("PGDATABASE")
+        "dbname": os.getenv("PGDATABASE"),
+        "port": os.getenv("PGPORT", 5432),
     }
     conn = psycopg2.connect(**db_params)
 

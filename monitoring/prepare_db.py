@@ -11,6 +11,7 @@ db_params = {
     "user": os.getenv("PGUSER"),
     "password": os.getenv("PGPASSWORD"),
     "dbname": os.getenv("PGDATABASE"),
+    "port": os.getenv("PGPORT", 5432),
 }
 
 conn = psycopg2.connect(**db_params)
