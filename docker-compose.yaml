@@ -13,6 +13,7 @@ services:
       OPENAI_MODEL_NAME: "${OPENAI_MODEL_NAME}"
     depends_on:
       - qdrant
+      - postgres  
 
   ui:
     build:
@@ -23,10 +24,10 @@ services:
     environment:
       OPENAI_API_URL: "http://core_service:8000"
       OPENAI_API_KEY: "cg_123456789_key"
-      PGHOST: "${PGHOST}"
-      PGDATABASE: "${PGDATABASE}"
-      PGUSER: "${PGUSER}"
-      PGPASSWORD": "${PGPASSWORD}"
+      PGHOST: "postgres_service"
+      PGDATABASE: "cgourmetfb"
+      PGUSER: "cgourmet_user"
+      PGPASSWORD: "P@ssw0rd2024"
     depends_on:
       - core
 
@@ -37,3 +38,18 @@ services:
       - "6333:6333"
     volumes:
       - ./qdrant_storage:/qdrant/storage
+
+  postgres:
+    image: postgres:16
+    container_name: postgres_service
+    environment:
+      POSTGRES_DB: "cgourmetfb"
+      POSTGRES_USER: "cgourmet_user"
+      POSTGRES_PASSWORD: "P@ssw0rd2024"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:

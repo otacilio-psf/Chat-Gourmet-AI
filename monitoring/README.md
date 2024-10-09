@@ -1,6 +1,6 @@
 # Module responsible to prepare monitoring feature
 
-For database we are using the cloud service [Neon](https://neon.tech/)
+For the database it use a Postgres:16
 
 In this folder we will have only prepare db, the code to insert new msgs and update with user feedback will be on ui 
 
@@ -17,10 +17,23 @@ link: `https://chat-gourmet-ai.streamlit.app/monitoring`
 2. Enviromental variables
 
 ```bash
-export PGHOST='<your-host>'
-export PGDATABASE='<your-db>'
-export PGUSER='<your-user>'
-export PGPASSWORD='<your-password>'
+export PGHOST='localhost'
+export PGDATABASE='cgourmetfb'
+export PGUSER='cgourmet_user'
+export PGPASSWORD='P@ssw0rd2024'
+```
+
+3. Run postgres on docker
+
+```bash
+docker run -d \
+  --name postgres_service \
+  -e POSTGRES_DB="cgourmetfb" \
+  -e POSTGRES_USER="cgourmet_user" \
+  -e POSTGRES_PASSWORD="P@ssw0rd2024" \
+  -v postgres_data:/var/lib/postgresql/data \
+  -p 5432:5432 \
+  postgres:16
 ```
 
 3. Run python dependencies

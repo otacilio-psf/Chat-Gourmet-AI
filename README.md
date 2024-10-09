@@ -34,6 +34,7 @@ You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-g
       - [Qdrant Cloud](#qdrant-cloud)
       - [Render](#render)
       - [Streamlit Community Cloud](#streamlit-community-cloud)
+      - [Neon](#neon)
   - [Built With](#built-with)
   - [Acknowledgements](#acknowledgements)
 
@@ -137,7 +138,7 @@ You can find the Subset at [otacilio-psf/recipe_short_dense_and_sparse_embedding
 2. Start and prepare the vector database. Refer to the README inside the `vector-db` directory.
   - tip: To start Qdrant you can do `make qdrant` from root folder
 
-3. Prepare the monitoring database. Refer to the README inside the `monitoring` directory.
+3. Start and prepare the monitoring database. Refer to the README inside the `monitoring` directory.
 
 4. Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions. Or you can use Groq free tier or OpenAI.
 
@@ -146,19 +147,22 @@ You can find the Subset at [otacilio-psf/recipe_short_dense_and_sparse_embedding
    - Using `vllm-serve` on Kaggle:
      ```bash
      export NGROK_API_KEY="<your-ngrok-api-key>"
-     export OPENAI_API_KEY="open-source-model"
      export OPENAI_API_URL="ngrok"
+     export OPENAI_API_KEY="open-source-model"
      export OPENAI_MODEL_NAME="ngrok"
      ```
    
    - Using OpenAi
      ```bash
+     export NGROK_API_KEY=""
+     export OPENAI_API_URL="openai"
      export OPENAI_API_KEY="<your-open-ai-key>"
      export OPENAI_MODEL_NAME="<choosed-model>"
      ```
 
    - Using Groq
      ```bash
+     export NGROK_API_KEY=""
      export OPENAI_API_URL="https://api.groq.com/openai"
      export OPENAI_API_KEY="<your-groq-key>"
      export OPENAI_MODEL_NAME="<choosed-model>"
@@ -228,7 +232,7 @@ In the web version at [https://chat-gourmet-ai.streamlit.app/monitoring](https:/
 
 ### Monitoring metrics implementation
 
-For the database it use a Postgres cloud service [Neon](https://neon.tech/)
+For the database it use a Postgres:16
 
 For dashboarding it levarage Streamlit
 
@@ -259,6 +263,10 @@ Render provides a sufficient free tier to deploy our FastApi server
 #### [Streamlit Community Cloud](https://docs.streamlit.io/deploy/streamlit-community-cloud)
 
 Streamlit Community Cloud allows you to publish public Streamlit apps for free.
+
+#### [Neon](https://neon.tech/)
+
+Postgres cloud service for free.
 
 ## Built With
 
