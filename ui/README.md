@@ -16,6 +16,10 @@ Chat Gourmet AI is a web-based chat application designed to assist users with co
 export OPENAI_API_KEY="<your-key>"
 export OPENAI_API_URL="<api-if-need>"
 export OPENAI_MODEL_NAME="<model-name>"
+export PGHOST='<your-host>'
+export PGDATABASE='<your-db>'
+export PGUSER='<your-user>'
+export PGPASSWORD='<your-password>'
 ```
 
 - Start the server
@@ -25,3 +29,7 @@ uv sync --frozen
 
 uv run streamlit run chatbot.py
 ```
+
+## Monitoring metrics
+
+The system metrics is not accessible in the chat page (intended), you can access the monitoring metrics at [`http://localhost:8501/monitoring`](http://localhost:8501/monitoring)
