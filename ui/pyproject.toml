@@ -1,12 +1,16 @@
 [project]
 name = "UI"
-version = "0.1.0"
+version = "0.2.0"
 description = "Web UI for Chat Gourmet AI"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "openai==1.44.1",
     "streamlit==1.38.0",
+    "psycopg2-binary>=2.9.9",
+    "matplotlib>=3.9.2",
+    "wordcloud>=1.9.3",
+    "pandas>=2.2.3",
 ]
 
 [tool.uv]

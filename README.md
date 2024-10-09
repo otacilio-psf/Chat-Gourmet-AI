@@ -26,6 +26,8 @@ You can access the app at [https://chat-gourmet-ai.streamlit.app](https://chat-g
     - [Without Docker](#without-docker)
     - [Query to the endpoint](#query-to-the-endpoint)
     - [Chat with UI](#chat-with-ui)
+  - [Monitoring metrics](#monitoring-metrics)
+    - [Monitoring metrics implementation](#monitoring-metrics-implementation)
   - [King of the Free-Tier Cloud Deployment](#king-of-the-free-tier-cloud-deployment)
     - [Services Used](#services-used)
       - [Groq Cloud](#groq-cloud)
@@ -63,6 +65,9 @@ This project is divided into the following components:
 
 - `evaluation`
   - A notebook containing retrieval and RAG evaluation processes. Check its README for evaluation results and methodology.
+
+- `monitoring`
+  - The code for prepare the database. Check its README for more information.
 
 Each component can be run standalone and includes a README with specific instructions.
 
@@ -123,6 +128,8 @@ You can find the Subset at [otacilio-psf/recipe_short_dense_and_sparse_embedding
 
 4. Prepare the vector database. Refer to the README inside the `vector-db` directory.
 
+5. Prepare the monitoring database. Refer to the README inside the `monitoring` directory.
+
 ### Without Docker
 
 1. Have [uv installed](https://docs.astral.sh/uv/getting-started/installation/)
@@ -130,9 +137,11 @@ You can find the Subset at [otacilio-psf/recipe_short_dense_and_sparse_embedding
 2. Start and prepare the vector database. Refer to the README inside the `vector-db` directory.
   - tip: To start Qdrant you can do `make qdrant` from root folder
 
-3. Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions. Or you can use Groq free tier or OpenAI.
+3. Prepare the monitoring database. Refer to the README inside the `monitoring` directory.
 
-4. Define Environment Variables:
+4. Serve LLaMA 3.1 8B on Kaggle. Please refer to the README inside the `model-serve` directory for instructions. Or you can use Groq free tier or OpenAI.
+
+5. Define Environment Variables:
 
    - Using `vllm-serve` on Kaggle:
      ```bash
@@ -155,13 +164,13 @@ You can find the Subset at [otacilio-psf/recipe_short_dense_and_sparse_embedding
      export OPENAI_MODEL_NAME="<choosed-model>"
      ```
 
-5. Install Python Dependencies
+6. Install Python Dependencies
 
    ```bash
    uv sync --frozen
    ```
 
-6. Start the OpenAI-Compatible Server:
+7. Start the OpenAI-Compatible Server:
 
    ```bash
    uv run server.py
@@ -210,6 +219,18 @@ print(content.choices[0].message.content)
 ### Chat with UI
 
 If using Docker Compose, you can access the UI at [`http://localhost:8501`](http://localhost:8501) and have a chat!
+
+## Monitoring metrics
+
+The system metrics is not accessible in the chat page (intended), you can access the monitoring metrics at [`http://localhost:8501/monitoring`](http://localhost:8501/monitoring)
+
+In the web version at [https://chat-gourmet-ai.streamlit.app/monitoring](https://chat-gourmet-ai.streamlit.app/monitoring)
+
+### Monitoring metrics implementation
+
+For the database it use a Postgres cloud service [Neon](https://neon.tech/)
+
+For dashboarding it levarage Streamlit
 
 ## King of the Free-Tier Cloud Deployment
 

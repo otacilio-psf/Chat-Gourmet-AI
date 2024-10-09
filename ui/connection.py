@@ -4,9 +4,16 @@ import os
 
 OPENAI_API_URL = os.getenv("OPENAI_API_URL")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL")
+OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME")
 
-client = OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
+
+@st.cache_resource
+def get_client():
+    return OpenAI(base_url=f"{OPENAI_API_URL}/v1", api_key=OPENAI_API_KEY)
+
+
+client = get_client()
+
 
 def initialize_system_instructions(messages):
     system_init_msg = [
@@ -30,10 +37,9 @@ Gently encourage the user to ask questions related to cooking, ingredients, or f
 def stream_response():
     st.session_state["full_response"] = ""
     request_msg = initialize_system_instructions(st.session_state.messages)
-    
 
     response = client.chat.completions.create(
-        model=OPENAI_API_MODEL, messages=request_msg, stream=True
+        model=OPENAI_MODEL_NAME, messages=request_msg, stream=True
     )
 
     st.session_state["full_response"] = ""
