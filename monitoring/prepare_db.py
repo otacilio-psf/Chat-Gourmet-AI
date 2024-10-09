@@ -1,10 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from psycopg2 import sql
 import polars as pl
 import numpy as np
 import psycopg2
 import random
 import os
+
 
 db_params = {
     "host": os.getenv("PGHOST"),
@@ -58,7 +59,7 @@ def insert_initial_data():
     df = pl.read_csv("../evaluation/dataset/Llama-3.1-8B-veredict.csv")
 
     timestamp_list = [
-        datetime.now()
+        datetime.now(timezone.utc)
         - timedelta(days=random.randint(0, 5), seconds=random.randint(0, 86400))
         for i in range(df.height)
     ]
