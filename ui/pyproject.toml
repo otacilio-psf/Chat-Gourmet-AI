@@ -7,6 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "openai==1.44.1",
     "streamlit==1.38.0",
+    "psycopg2-binary>=2.9.9",
 ]
 
 [tool.uv]
